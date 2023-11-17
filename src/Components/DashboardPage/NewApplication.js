@@ -4,13 +4,16 @@ import { BACKEND_URL } from "../../constants";
 import axios from "axios";
 
 //-----------Components-----------//
-import InputText from "../Details/InputText";
-import InputDate from "../Details/InputDate";
-import Button from "../Details/Button";
+import InputText from "../../Details/InputText";
+import InputDate from "../../Details/InputDate";
+import Button from "../../Details/Button";
+import { useNavigate } from "react-router-dom";
 
 const NewApplication = () => {
+  const navigate = useNavigate();
+
   const [formInfo, setFormInfo] = useState({
-    userId: 1, //Set as 1 for now
+    userId: 1, // To change later once Auth done
     companyName: "",
     jobPosition: "",
     location: "",
@@ -32,11 +35,17 @@ const NewApplication = () => {
   const selectChange = (e) => {
     const value = e.target.value;
     setFormInfo((prevState) => {
-      const updatedStatusId = prevState.statusId
-        ? `${prevState.statusId} ${value}`
-        : value;
-      return { ...prevState, statusId: updatedStatusId };
+      return { ...prevState, statusId: value };
     });
+  };
+
+  // Data validation
+  const isFilled = () => {
+    return (
+      formInfo.companyName.trim() !== "" &&
+      formInfo.jobPosition.trim() !== "" &&
+      formInfo.statusId.trim() !== ""
+    );
   };
 
   const toggleIsBookmarked = () => {
@@ -46,20 +55,12 @@ const NewApplication = () => {
     }));
   };
 
-  const isFilled = () => {
-    return (
-      formInfo.companyName.trim() !== "" &&
-      formInfo.jobPosition.trim() !== "" &&
-      formInfo.statusId.trim() !== ""
-    );
-  };
-
   const postNewApplication = async () => {
     // const data = {
     //   userId: 1,
     //   jobPosition: "Keyboard Warrior v3",
     //   color: "#E4FBC0",
-    //   companyName: "My First Company Co",
+    //   companyName: "My First Company Co", // words
     //   location: "Bali, Indonesia",
     //   statusId: 4,
     //   is_bookmarked: true,
@@ -69,12 +70,12 @@ const NewApplication = () => {
     console.log("Data sending", formInfo);
 
     try {
-      //Create New Sighting
       const post = await axios.post(
         `${BACKEND_URL}/applications/newApplication`,
         formInfo,
       );
-
+      document.getElementById("new_application_modal").close(); // Close modal if successful
+      navigate("/dashboard");
       console.log("Post data", post);
     } catch (err) {
       console.log(err);

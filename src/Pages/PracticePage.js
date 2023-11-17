@@ -2,7 +2,7 @@
 import React, { useState } from "react";
 
 //-----------Components-----------//
-import NavBar from "../Components/Details/NavBar";
+import NavBar from "../Details/NavBar";
 
 //-----------Media-----------//
 

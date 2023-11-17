@@ -1,13 +1,54 @@
-# Rocket Academy Coding Bootcamp: Project 3 Frontend
+# Rocket Academy Project 3: Full-Stack Application (React & ExpressJS)
 
-## Available Scripts
+Contributors: Sathya Thenappan, Gabriel Lim
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app). In the project directory, you can run:
+# GitHired: Job Application Tracker for Software Developers
 
-### `npm start`
+Your end tag to your job search as a software egnineer!
 
-Runs the app in the development mode.\
+Backend Repo: https://github.com/sathyat20/GitHired-Backend
+
+# Tech Stack
+
+**Frontend**
+
+- React.JS
+- TailwindCSS
+- DaisyUI
+- ReactRouter
+- Framer Motion
+
+**Backend**
+
+- ExpressJS
+- Firebase Storage
+
+**Hosting**
+
+- Netlify (Frontend)
+- Fly.io (Backend)
+
+**APIs**
+
+- Sengrid by Twilio https://sendgrid.com/en-us
+
+# Project Management
+
+- Kanban Board - Github Projects
+- Wireframing & User Flows - Figma
+- Feature Planning - Miro
+- Communication - Zoom, Slack
+
+# Core Features
+
+# Future Enhancements
+
+# Resources Used
+
+- Setting up Magic Link Auth with JWT verification https://www.youtube.com/watch?v=b6qHfPdv4Y8
+-
+
+## Launch Guide
+
+`npm start` Runs the app in the development mode.\
 Open [http://localhost:3000](http://localhost:3000) to view it in your browser.
-
-The page will reload when you make changes.\
-You may also see any lint errors in the console.

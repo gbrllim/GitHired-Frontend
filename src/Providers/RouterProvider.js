@@ -29,7 +29,7 @@ const router = createBrowserRouter([
     errorElement: <ErrorPage />,
     children: [
       {
-        path: "add",
+        path: "edit/:id",
         element: <ApplicationPage />,
         errorElement: <ErrorPage />,
       },

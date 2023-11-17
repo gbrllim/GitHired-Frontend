@@ -12,7 +12,7 @@ const Dashboard = () => {
   // Retrieve data from the backend to populate dashboard
   useEffect(() => {
     axios
-      .get(`${BACKEND_URL}/users/1/applications`)
+      .get(`${BACKEND_URL}/users/1/applications`) // Endpoint: /users/:userId/applications
       .then((response) => {
         console.log("Backend Data Pulled: ", response.data.applications);
         const data = response.data.applications;
@@ -35,7 +35,6 @@ const Dashboard = () => {
         });
 
         setAppGroup(groupedApps);
-        console.log("Grouped Apps", appGroup);
       })
       .catch((error) => {
         console.error(error);
@@ -49,8 +48,6 @@ const Dashboard = () => {
       <ApplicationGroup header="Screening" apps={appGroup?.Screening || []} />
       <ApplicationGroup header="Interview" apps={appGroup?.Interview || []} />
       <ApplicationGroup header="Offer" apps={appGroup?.Offer || []} />
-      <ApplicationGroup header="No Response" apps={appGroup?.Archive || []} />
-      <ApplicationGroup header="Archive" apps={appGroup?.Archive || []} />
     </main>
   );
 };

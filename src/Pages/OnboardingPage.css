@@ -1,0 +1,23 @@
+.tooltip {
+  position: relative;
+  display: inline-block;
+  text-align: center;
+  --tooltip-tail: 0.1875rem /* 3px */;
+  --tooltip-color: #1c3f58;
+  --tooltip-text-color: hsl(var(--nc));
+  --tooltip-tail-offset: calc(100% + 0.0625rem /* 1px */ - var(--tooltip-tail));
+}
+
+.tooltip:before {
+  max-width: 20rem /* 320px */;
+  border-radius: 0.25rem /* 4px */;
+  padding-left: 0.5rem /* 8px */;
+  padding-right: 0.5rem /* 8px */;
+  padding-top: 0.25rem /* 4px */;
+  padding-bottom: 0.25rem /* 4px */;
+  font-size: 0.875rem /* 14px */;
+  line-height: 1.25rem /* 20px */;
+  background-color: #1c3f58;
+  color: var(--tooltip-text-color);
+  width: max-content;
+}

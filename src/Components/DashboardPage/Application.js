@@ -1,10 +1,11 @@
 import { NavLink } from "react-router-dom";
 
 const Application = ({ application }) => {
-  const { id, companyName, jobPosition, updatedAt, color } = application;
+  const { id, companyName, jobPosition, updatedAt, color, is_bookmarked } =
+    application;
   return (
     <NavLink
-      to="/dashboard/edit"
+      to={`/dashboard/edit/${id}`}
       className="m-1 flex h-[80px] flex-row rounded-lg shadow-lg shadow-primary hover:translate-y-[-2px]"
     >
       {/* Color coding for applications */}
@@ -23,7 +24,11 @@ const Application = ({ application }) => {
           {updatedAt}
         </p>
       </div>
-      <div className="w-[40px] rounded-r-lg bg-text p-1 pr-2 text-end text-accent hover:text-primary">
+      <div
+        className={`${
+          is_bookmarked ? "text-red-500" : "text-accent"
+        } w-[40px] rounded-r-lg bg-text p-1 pr-2 text-end`}
+      >
         <button className="mb-auto text-[22px] leading-none">♥︎</button>
       </div>
     </NavLink>

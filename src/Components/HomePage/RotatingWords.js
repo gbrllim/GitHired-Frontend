@@ -19,8 +19,8 @@ const RotatingWords = ({ words }) => {
   };
 
   return (
-    <div className="m-2 ml-8 flex w-[380px] flex-row">
-      <h1 className="text-text mr-2 text-[2em]">Manage your</h1>
+    <div className="m-2 ml-8 flex w-[420px] flex-row">
+      <h1 className="mr-2 text-[2em] text-text">Manage your</h1>
       <motion.h1
         className="mr-2 text-[2em] text-primary"
         key={index}
