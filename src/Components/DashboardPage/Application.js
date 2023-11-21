@@ -1,7 +1,7 @@
 import { NavLink } from "react-router-dom";
 
 const Application = ({ application }) => {
-  const { id, companyName, jobPosition, updatedAt, color, is_bookmarked } =
+  const { id, companyName, jobPosition, updatedAt, color, isBookmarked } =
     application;
   return (
     <NavLink
@@ -26,7 +26,7 @@ const Application = ({ application }) => {
       </div>
       <div
         className={`${
-          is_bookmarked ? "text-red-500" : "text-accent"
+          isBookmarked ? "text-red-500" : "text-accent"
         } w-[40px] rounded-r-lg bg-text p-1 pr-2 text-end`}
       >
         <button className="mb-auto text-[22px] leading-none">♥︎</button>

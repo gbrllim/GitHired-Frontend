@@ -1,26 +1,28 @@
 //-----------Libaries-----------//
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import axios from "axios";
 
 //-----------Components-----------//
 import NavBar from "../Details/NavBar";
+import NewQuestion from "../Components/PracticePage/NewQuestion";
+import NewTopic from "../Components/PracticePage/NewTopic";
 
 //-----------Media-----------//
-
 const Problem = ({
   title,
+  link,
   notes,
   difficulty,
-  solved,
+  statusId,
   starred,
   onSolvedChange,
-  onStarredChange
+  onStarredChange,
 }) => (
-  
   <div className="flex items-center justify-between border-b border-gray-600 p-2">
     <span className="w-1/12">
       <input
         type="checkbox"
-        checked={solved}
+        checked={statusId === 1}
         onChange={onSolvedChange}
         className="h-4 w-4 rounded border-gray-300 checked:bg-green-500"
       />
@@ -34,7 +36,16 @@ const Problem = ({
         ★
       </span>
     </span>
-    <span className="w-5/12 text-white">{title}</span>
+    <span className="w-5/12 text-white">
+      <a
+        href={link}
+        target="_blank"
+        rel="noopener noreferrer"
+        className="text-white hover:text-blue-500"
+      >
+        {title}
+      </a>
+    </span>
     <span className="w-4/12 text-gray-300">{notes}</span>
     <span className="w-1/12">
       <button
@@ -49,323 +60,139 @@ const Problem = ({
 );
 
 export default function PracticePage() {
-
   const [openTopic, setOpenTopic] = useState(null);
+  const [showNewTopic, setShowNewTopic] = useState(false);
+  const BACKEND_URL = process.env.REACT_APP_BACKEND_URL; //http://localhost:8080/questions/getAllQuestions
 
-  const [topics, setTopics] = useState(
-    [
-    {
-      name: "Arrays & Hashing",
-      problems: [
-        {
-          title: "172: Two Sum",
-          notes: "Easier to solve on Python",
-          difficulty: "Easy",
-          solved: true,
-          starred: false,
-        },
-        {
-          title: "172: Two Sum",
-          notes: "Easier to solve on Python",
-          difficulty: "Medium",
-          solved: false,
-          starred: false,
-        },
-        {
-          title: "172: Two Sum",
-          notes: "Easier to solve on Python",
-          difficulty: "Hard",
-          solved: false,
-          starred: false,
-        },
-        {
-          title: "172: Two Sum",
-          notes: "Easier to solve on Python",
-          difficulty: "Easy",
-          solved: false,
-          starred: true,
-        },
-      ],
-    },
-    {
-      name: "Two Pointers",
-      problems: [
-        {
-          title: "172: Two Sum",
-          notes: "Easier to solve on Python",
-          difficulty: "Easy",
-          solved: true,
-          starred: false,
-        },
-        {
-          title: "172: Two Sum",
-          notes: "Easier to solve on Python",
-          difficulty: "Easy",
-          solved: false,
-          starred: false,
-        },
-        {
-          title: "172: Two Sum",
-          notes: "Easier to solve on Python",
-          difficulty: "Easy",
-          solved: false,
-          starred: false,
-        },
-        {
-          title: "172: Two Sum",
-          notes: "Easier to solve on Python",
-          difficulty: "Easy",
-          solved: false,
-          starred: true,
-        },
-      ],
-    },
-    {
-      name: "Sliding Windows",
-      problems: [
-        {
-          title: "172: Two Sum",
-          notes: "Easier to solve on Python",
-          difficulty: "Easy",
-          solved: true,
-          starred: false,
-        },
-        {
-          title: "172: Two Sum",
-          notes: "Easier to solve on Python",
-          difficulty: "Easy",
-          solved: false,
-          starred: false,
-        },
-        {
-          title: "172: Two Sum",
-          notes: "Easier to solve on Python",
-          difficulty: "Easy",
-          solved: false,
-          starred: false,
-        },
-        {
-          title: "172: Two Sum",
-          notes: "Easier to solve on Python",
-          difficulty: "Easy",
-          solved: false,
-          starred: true,
-        },
-      ],
-    },
-    {
-      name: "Stacks",
-      problems: [
-        {
-          title: "172: Two Sum",
-          notes: "Easier to solve on Python",
-          difficulty: "Easy",
-          solved: true,
-          starred: false,
-        },
-        {
-          title: "172: Two Sum",
-          notes: "Easier to solve on Python",
-          difficulty: "Easy",
-          solved: false,
-          starred: false,
-        },
-        {
-          title: "172: Two Sum",
-          notes: "Easier to solve on Python",
-          difficulty: "Easy",
-          solved: false,
-          starred: false,
-        },
-        {
-          title: "172: Two Sum",
-          notes: "Easier to solve on Python",
-          difficulty: "Easy",
-          solved: false,
-          starred: true,
-        },
-      ],
-    },
-    {
-      name: "Binary Search",
-      problems: [
-        {
-          title: "172: Two Sum",
-          notes: "Easier to solve on Python",
-          difficulty: "Easy",
-          solved: true,
-          starred: false,
-        },
-        {
-          title: "172: Two Sum",
-          notes: "Easier to solve on Python",
-          difficulty: "Easy",
-          solved: false,
-          starred: false,
-        },
-        {
-          title: "172: Two Sum",
-          notes: "Easier to solve on Python",
-          difficulty: "Easy",
-          solved: false,
-          starred: false,
-        },
-        {
-          title: "172: Two Sum",
-          notes: "Easier to solve on Python",
-          difficulty: "Easy",
-          solved: false,
-          starred: true,
-        },
-      ],
-    },
-    {
-      name: "Trees",
-      problems: [
-        {
-          title: "172: Two Sum",
-          notes: "Easier to solve on Python",
-          difficulty: "Easy",
-          solved: true,
-          starred: false,
-        },
-        {
-          title: "172: Two Sum",
-          notes: "Easier to solve on Python",
-          difficulty: "Easy",
-          solved: false,
-          starred: false,
-        },
-        {
-          title: "172: Two Sum",
-          notes: "Easier to solve on Python",
-          difficulty: "Easy",
-          solved: false,
-          starred: false,
-        },
-        {
-          title: "172: Two Sum",
-          notes: "Easier to solve on Python",
-          difficulty: "Easy",
-          solved: false,
-          starred: true,
-        },
-      ],
-    },
-    {
-      name: "Graphs",
-      problems: [
-        {
-          title: "172: Two Sum",
-          notes: "Easier to solve on Python",
-          difficulty: "Easy",
-          solved: true,
-          starred: false,
-        },
-        {
-          title: "172: Two Sum",
-          notes: "Easier to solve on Python",
-          difficulty: "Easy",
-          solved: false,
-          starred: false,
-        },
-        {
-          title: "172: Two Sum",
-          notes: "Easier to solve on Python",
-          difficulty: "Easy",
-          solved: false,
-          starred: false,
-        },
-        {
-          title: "172: Two Sum",
-          notes: "Easier to solve on Python",
-          difficulty: "Easy",
-          solved: false,
-          starred: true,
-        },
-      ],
-    },
-    {
-      name: "Backtracking",
-      problems: [
-        {
-          title: "172: Two Sum",
-          notes: "Easier to solve on Python",
-          difficulty: "Easy",
-          solved: true,
-          starred: false,
-        },
-        {
-          title: "172: Two Sum",
-          notes: "Easier to solve on Python",
-          difficulty: "Easy",
-          solved: false,
-          starred: false,
-        },
-        {
-          title: "172: Two Sum",
-          notes: "Easier to solve on Python",
-          difficulty: "Easy",
-          solved: false,
-          starred: false,
-        },
-        {
-          title: "172: Two Sum",
-          notes: "Easier to solve on Python",
-          difficulty: "Easy",
-          solved: false,
-          starred: true,
-        },
-      ],
-    },
-    {
-      name: "1-D Dynamic Programming",
-      problems: [
-        {
-          title: "172: Two Sum",
-          notes: "Easier to solve on Python",
-          difficulty: "Easy",
-          solved: true,
-          starred: false,
-        },
-        {
-          title: "172: Two Sum",
-          notes: "Easier to solve on Python",
-          difficulty: "Easy",
-          solved: false,
-          starred: false,
-        },
-        {
-          title: "172: Two Sum",
-          notes: "Easier to solve on Python",
-          difficulty: "Easy",
-          solved: false,
-          starred: false,
-        },
-        {
-          title: "172: Two Sum",
-          notes: "Easier to solve on Python",
-          difficulty: "Easy",
-          solved: false,
-          starred: true,
-        },
-      ],
-    },
-  ]);
+  const [topics, setTopics] = useState([]);
 
-   const toggleSolved = (topicIndex, problemIndex) => {
-     const newTopics = [...topics];
-     const problem = newTopics[topicIndex].problems[problemIndex];
-     problem.solved = !problem.solved; 
-     setTopics(newTopics);
-   };
+  useEffect(() => {
+    axios
+      .get(`${BACKEND_URL}/questions/getAllQuestions`)
+      .then((response) => {
+        const questions = response.data.data;
+        const categories = response.data.categories;
 
-     const toggleStarred = (topicIndex, problemIndex) => {
-       const newTopics = [...topics];
-       const problem = newTopics[topicIndex].problems[problemIndex];
-       problem.starred = !problem.starred; 
-       setTopics(newTopics);
-     };
+        // Difficulty
+        const difficultyMap = {
+          1: "Easy",
+          2: "Medium",
+          3: "Hard",
+        };
+
+        const statusMap = {
+          1: true,
+          2: false,
+        };
+
+        // Transforming the data
+        const transformedData = categories.map((category) => {
+          return {
+            name: category.categoryName,
+            problems: questions
+              .filter((question) => question.categoryId === category.id)
+              .map((question) => {
+                return {
+                  id: question.id,
+                  title: question.title,
+                  link: question.link,
+                  notes: question.notes,
+                  difficulty: difficultyMap[question.difficultyId],
+                  statusId: statusMap[question.statusId],
+                  starred: question.starred,
+                };
+              }),
+          };
+        });
+
+        setTopics(transformedData);
+      })
+      .catch((error) => {
+        console.error("Error fetching data: ", error);
+      });
+  }, []);
+
+  const handleAddClick = () => {
+    document.getElementById("new_question_modal").showModal();
+  };
+
+  const toggleSolved = async (topicIndex, problemIndex) => {
+    // Create a new copy of topics with the updated status
+    const newTopics = topics.map((topic, tIndex) => {
+      if (tIndex === topicIndex) {
+        return {
+          ...topic,
+          problems: topic.problems.map((problem, pIndex) => {
+            if (pIndex === problemIndex) {
+              // Toggle the statusId and return a new problem object
+              const newStatusId = problem.statusId === 1 ? 2 : 1;
+              return {
+                ...problem,
+                statusId: newStatusId,
+              };
+            }
+            return problem;
+          }),
+        };
+      }
+      return topic;
+    });
+
+    const updatedProblem = newTopics[topicIndex].problems[problemIndex];
+
+    try {
+      // Send a PUT request to update the backend
+      await axios.put(
+        `http://localhost:8080/questions/edit/${updatedProblem.id}`,
+        {
+          statusId: updatedProblem.statusId,
+        },
+      );
+
+      // Update the state only if backend update is successful
+      setTopics(newTopics);
+    } catch (error) {
+      console.error("Error updating question: ", error);
+    }
+  };
+
+  const toggleStarred = async (topicIndex, problemIndex) => {
+     const newTopics = topics.map((topic, tIndex) => {
+    if (tIndex === topicIndex) {
+      return {
+        ...topic,
+        problems: topic.problems.map((problem, pIndex) => {
+          if (pIndex === problemIndex) {
+            // Toggle the starred status and return a new problem object
+            return {
+              ...problem,
+              starred: !problem.starred,
+            };
+          }
+          return problem;
+        }),
+      };
+    }
+    return topic;
+  });
+
+  const updatedProblem = newTopics[topicIndex].problems[problemIndex];
+
+  try {
+    // Send a PUT request to update the backend
+    await axios.put(
+      `http://localhost:8080/questions/edit/${updatedProblem.id}`,
+      {
+        starred: updatedProblem.starred,
+      },
+    );
+
+    // Update the state only if backend update is successful
+    setTopics(newTopics);
+  } catch (error) {
+    console.error("Error updating question: ", error);
+  }
+  };
 
   return (
     <div className="flex h-screen flex-col items-center justify-center bg-background">
@@ -383,6 +210,7 @@ export default function PracticePage() {
               >
                 {topic.name}
               </button>
+
               {openTopic === topicIndex && (
                 <div>
                   <div className="flex justify-between p-2 text-white">
@@ -396,6 +224,7 @@ export default function PracticePage() {
                     {topic.problems.map((problem, problemIndex) => (
                       <Problem
                         key={problemIndex}
+                        link={problem.link}
                         {...problem}
                         onSolvedChange={() =>
                           toggleSolved(topicIndex, problemIndex)
@@ -410,7 +239,15 @@ export default function PracticePage() {
               )}
             </div>
           ))}
+          <button
+            className="mt-0.4 w-full rounded bg-gray-700 p-3 text-left text-white"
+            onClick={handleAddClick}
+          >
+            + <strong>Add New Topic</strong>
+          </button>
+          <NewTopic />
         </div>
+        <NewQuestion topics={topics} />
       </div>
     </div>
   );

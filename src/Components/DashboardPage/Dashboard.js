@@ -1,12 +1,13 @@
 //-----------Libraries-----------//
 import axios from "axios";
 import { useEffect, useState } from "react";
-import { BACKEND_URL } from "../../constants";
 
 //-----------Components-----------//
 import ApplicationGroup from "./ApplicationGroup";
 
 const Dashboard = () => {
+  const BACKEND_URL = process.env.REACT_APP_BACKEND_URL; // http://localhost:8080/users/1/applications
+
   const [appGroup, setAppGroup] = useState(null);
 
   // Retrieve data from the backend to populate dashboard

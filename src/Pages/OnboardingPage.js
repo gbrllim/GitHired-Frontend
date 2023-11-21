@@ -1,7 +1,6 @@
 //-----------Libaries-----------//
 import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { BACKEND_URL } from "../constants";
 import axios from "axios";
 
 //-----------Firebase-----------//
@@ -20,6 +19,8 @@ import defaultProfile from "../Images/defaultProfile.png";
 import "./OnboardingPage.css";
 
 export default function OnboardingPage() {
+  const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
+
   const navigate = useNavigate();
 
   // Variables

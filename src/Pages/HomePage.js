@@ -1,6 +1,5 @@
 //-----------Libaries-----------//
 import { NavLink } from "react-router-dom";
-import { BACKEND_URL } from "../constants";
 import axios from "axios";
 import { useState } from "react";
 import { motion } from "framer-motion";
@@ -15,6 +14,8 @@ import logo from "../Images/Logo-GitHired.svg";
 import demo from "../Images/Mock-demo.png";
 
 export default function HomePage() {
+  const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
+
   const rotatingText = ["Applications", "Reminders", "Questions", "Notes"];
   const [data, setData] = useState({ email: "" });
   const [message, setMessage] = useState("");
