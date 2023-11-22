@@ -19,32 +19,27 @@ import NavBar from "../Details/NavBar";
 //-----------Utilities-----------//
 import {bearerToken} from "../Utilities/token";
 
-//-----------Dummy Data-----------//
-// const jobApplicationsData = [
-//   { week: "5", Applications: 5 },
-//   { week: "6", Applications: 5 },
-//   { week: "7", Applications: 8 },
-//   { week: "8", Applications: 6 },
-//   { week: "9", Applications: 10 },
-//   { week: "10", Applications: 12 },
-//   { week: "11", Applications: 13 },
-//   { week: "12", Applications: 14 },
-//   { week: "13", Applications: 5 },
-// ];
-
-// const codingPracticeData = [
-//   { week: "5", Questions: 3 },
-//   { week: "6", Questions: 4 },
-//   { week: "7", Questions: 7 },
-//   { week: "8", Questions: 8 },
-//   { week: "9", Questions: 9 },
-//   { week: "10", Questions: 20 },
-//   { week: "11", Questions: 18 },
-//   { week: "12", Questions: 25 },
-//   { week: "13", Questions: 3 },
-// ];
-
 //-----------Media-----------//
+
+const CustomTooltip = ({ active, payload, label }) => {
+  if (active && payload && payload.length) {
+    return (
+      <div
+        className="custom-tooltip"
+        style={{
+          backgroundColor: "grey",
+          padding: "10px",
+          border: "1px solid #ccc",
+        }}
+      >
+        <p className="label">{`Week ${label} : ${payload[0].value}`}</p>
+        {/* You can add more content here */}
+      </div>
+    );
+  }
+
+  return null;
+};
 
 export default function MetricsPage() {
   const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
@@ -227,9 +222,16 @@ export default function MetricsPage() {
                 margin={{ top: 20, right: 30, left: 20, bottom: 5 }}
               >
                 <CartesianGrid strokeDasharray="3 3" />
-                <XAxis dataKey="week" />
+                <XAxis
+                  dataKey="week"
+                  label={{
+                    value: "Week",
+                    position: "insideBottomRight",
+                    offset: -10,
+                  }}
+                />
                 <YAxis />
-                <Tooltip />
+                <Tooltip content={<CustomTooltip />} />
                 <Legend />
                 <Bar dataKey="Applications" fill="#10b981" />
                 <ReferenceLine
@@ -252,9 +254,16 @@ export default function MetricsPage() {
                 margin={{ top: 20, right: 30, left: 20, bottom: 5 }}
               >
                 <CartesianGrid strokeDasharray="3 3" />
-                <XAxis dataKey="week" />
+                <XAxis
+                  dataKey="week"
+                  label={{
+                    value: "Week",
+                    position: "insideBottomRight",
+                    offset: -10,
+                  }}
+                />
                 <YAxis />
-                <Tooltip />
+                <Tooltip content={<CustomTooltip />} />
                 <Legend />
                 <Bar dataKey="Questions" fill="#3b82f6" />
                 <ReferenceLine
