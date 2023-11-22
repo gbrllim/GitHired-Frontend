@@ -17,7 +17,14 @@ import wallpaper from "../Images/gh-wallpaper.png";
 export default function HomePage() {
   const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
 
-  const rotatingText = ["Applications", "Reminders", "Questions", "Notes"];
+  const rotatingText = [
+    "applications",
+    "reminders",
+    "interviews",
+    "contacts",
+    "questions",
+    "notes",
+  ];
   const [data, setData] = useState({ email: "" });
   const [message, setMessage] = useState(null);
   const [success, setSuccess] = useState(false);

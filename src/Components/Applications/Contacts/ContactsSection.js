@@ -4,19 +4,19 @@ import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 
 //-----------Components-----------//
-import InterviewAdd from "./InterviewAdd";
-import InterviewEdit from "./InterviewEdit";
-import InterviewPreview from "./InterviewPreview";
+import ContactsAdd from "./ContactsAdd";
+import ContactsEdit from "./ContactsEdit";
+import ContactsPreview from "./ContactsPreview";
 
 //-----------Utilities-----------//
 import { bearerToken } from "../../../Utilities/token";
 
-const InterviewSection = () => {
+const ContactsSection = () => {
   const token = localStorage.getItem("token");
   const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
   const { id } = useParams();
 
-  const [currentInterview, setCurrentInterview] = useState(null);
+  const [currentContact, setCurrentContact] = useState(null);
   const [data, setData] = useState(null);
 
   // Initial request
@@ -27,10 +27,10 @@ const InterviewSection = () => {
   // Refresh data from db
   const refresh = () => {
     axios
-      .get(`${BACKEND_URL}/users/${id}/interviews`, bearerToken(token))
+      .get(`${BACKEND_URL}/users/${id}/contacts`, bearerToken(token))
       .then((response) => {
-        console.log("interview data", response.data.data);
-        setData(response.data.data);
+        console.log("contacts data", response.data.contacts);
+        setData(response.data.contacts);
       })
       .catch((error) => {
         console.log(error);
@@ -39,7 +39,7 @@ const InterviewSection = () => {
 
   // Allows toggling between interviews
   const select = (id) => {
-    setCurrentInterview(id);
+    setCurrentContact(id);
   };
 
   // Function to sort a single data point by id
@@ -48,18 +48,18 @@ const InterviewSection = () => {
   };
 
   // Request data by id
-  const currentInterviewData = findDataById(currentInterview);
+  const currentContactData = findDataById(currentContact);
 
   return (
     <div className="flex h-full w-full flex-row ">
       <aside className="flex w-1/3 flex-col items-center overflow-y-auto">
-        <h1 className="ml-2">Interview 💼</h1>
+        <h1 className="ml-2">Contacts 👤</h1>
         <div className="flex h-[200px] flex-col">
           {data &&
-            data.map((interview, index) => (
-              <InterviewPreview
+            data.map((contact, index) => (
+              <ContactsPreview
                 key={index}
-                data={interview}
+                data={contact}
                 select={select}
                 refresh={refresh}
               />
@@ -67,18 +67,15 @@ const InterviewSection = () => {
         </div>
       </aside>
       <main className="m-1 w-2/3 rounded-lg bg-slate-600">
-        {currentInterviewData ? (
-          <InterviewEdit
-            currentInterview={currentInterviewData}
-            refresh={refresh}
-          />
+        {currentContactData ? (
+          <ContactsEdit currentContact={currentContactData} refresh={refresh} />
         ) : (
-          <p className="text-center">Click on the left to open a Interview</p>
+          <p className="text-center">Click on the left to open a Contact</p>
         )}
-        <InterviewAdd appId={id} refresh={refresh} />
+        <ContactsAdd appId={id} refresh={refresh} />
       </main>
     </div>
   );
 };
 
-export default InterviewSection;
+export default ContactsSection;

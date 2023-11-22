@@ -14,6 +14,7 @@ import SettingsPage from "../Pages/SettingsPage";
 import NotesSection from "../Components/Applications/Notes/NotesSection";
 import InterviewSection from "../Components/Applications/Interviews/InterviewSection";
 import RemindersSection from "../Components/Applications/Reminders/RemindersSection";
+import ContactsSection from "../Components/Applications/Contacts/ContactsSection";
 
 const router = createBrowserRouter([
   {
@@ -53,7 +54,7 @@ const router = createBrowserRouter([
           },
           {
             path: "contacts",
-            element: <InterviewSection />,
+            element: <ContactsSection />,
             errorElement: <ErrorPage />,
           },
           {

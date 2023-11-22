@@ -7,7 +7,7 @@ import NavBar from "../Details/NavBar";
 
 //-----------Utlities-----------//
 import { bearerToken } from "../Utilities/token";
-import ContactCard from "../Components/Contacts/ContactCard";
+import ContactPreview from "../Components/Contacts/ContactCard";
 
 //-----------Media-----------//
 
@@ -37,7 +37,7 @@ export default function ContactsPage() {
       <div>
         {data &&
           data.map((contact, index) => (
-            <ContactCard key={index} data={contact} />
+            <ContactPreview key={index} data={contact} />
           ))}
       </div>
     </div>

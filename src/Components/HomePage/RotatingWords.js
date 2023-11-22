@@ -8,7 +8,7 @@ const RotatingWords = ({ words }) => {
   useEffect(() => {
     const intervalId = setInterval(() => {
       setIndex((prevIndex) => (prevIndex + 1) % words.length);
-    }, 1000);
+    }, 1400);
 
     return () => clearInterval(intervalId);
   }, [words.length]);

@@ -1,15 +1,15 @@
-const ContactCard = ({ data }) => {
+const ContactPreview = ({ data }) => {
   return (
-    <div className="m-1 rounded-lg bg-primary p-2">
-      <p>{data.contactName}</p>
-      <p>{data.companyName}</p>
-      <p>{data.jobPosition}</p>
-      <p>{data.email}</p>
-      <p>{data.phoneNumber}</p>
-      <p>{data.notes}</p>
-      <p>{data.lastContactedDate}</p>
+    <div className="m-1 bg-accent p-2">
+      <p className="text-black">{data.contactName}</p>
+      <p className="text-black">{data.companyName}</p>
+      <p className="text-black">{data.jobPosition}</p>
+      <p className="text-black">{data.email}</p>
+      <p className="text-black">{data.phoneNumber}</p>
+      <p className="text-black">{data.notes}</p>
+      <p className="text-black">{data.lastContactedDate}</p>
     </div>
   );
 };
 
-export default ContactCard;
+export default ContactPreview;
