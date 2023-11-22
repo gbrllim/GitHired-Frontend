@@ -17,36 +17,36 @@ import NavBar from "../Details/NavBar";
 
 //-----------Dummy Data-----------//
 const jobApplicationsData = [
-  { week: "5", applications: 5 },
-  { week: "6", applications: 5 },
-  { week: "7", applications: 8 },
-  { week: "8", applications: 6 },
-  { week: "9", applications: 10 },
-  { week: "10", applications: 12 },
-  { week: "11", applications: 13 },
-  { week: "12", applications: 14 },
-  { week: "13", applications: 5 },
+  { week: "5", Applications: 5 },
+  { week: "6", Applications: 5 },
+  { week: "7", Applications: 8 },
+  { week: "8", Applications: 6 },
+  { week: "9", Applications: 10 },
+  { week: "10", Applications: 12 },
+  { week: "11", Applications: 13 },
+  { week: "12", Applications: 14 },
+  { week: "13", Applications: 5 },
 ];
 
 const codingPracticeData = [
-  { week: "5", questions: 3 },
-  { week: "6", questions: 4 },
-  { week: "7", questions: 7 },
-  { week: "8", questions: 8 },
-  { week: "9", questions: 9 },
-  { week: "10", questions: 10 },
-  { week: "11", questions: 11 },
-  { week: "12", questions: 12 },
-  { week: "13", questions: 3 },
+  { week: "5", Questions: 3 },
+  { week: "6", Questions: 4 },
+  { week: "7", Questions: 7 },
+  { week: "8", Questions: 8 },
+  { week: "9", Questions: 9 },
+  { week: "10", Questions: 10 },
+  { week: "11", Questions: 11 },
+  { week: "12", Questions: 12 },
+  { week: "13", Questions: 3 },
 ];
 
 //-----------Media-----------//
 
 export default function MetricsPage() {
   const latestJobApplications =
-    jobApplicationsData[jobApplicationsData.length - 1].applications;
+    jobApplicationsData[jobApplicationsData.length - 1].Applications;
   const latestCodingQuestions =
-    codingPracticeData[codingPracticeData.length - 1].questions;
+    codingPracticeData[codingPracticeData.length - 1].Questions;
 
   // Weekly goals: reference lines
   const weeklyJobGoal = 10; // goal for job applications
@@ -113,7 +113,7 @@ export default function MetricsPage() {
             <h2 className="mb-2 text-lg font-semibold">
               Weekly Job Applications
             </h2>
-            <ResponsiveContainer width="100%" height={300}>
+            <ResponsiveContainer width="100%" height={450}>
               <BarChart
                 data={jobApplicationsData}
                 margin={{ top: 20, right: 30, left: 20, bottom: 5 }}
@@ -123,7 +123,7 @@ export default function MetricsPage() {
                 <YAxis />
                 <Tooltip />
                 <Legend />
-                <Bar dataKey="applications" fill="#10b981" />
+                <Bar dataKey="Applications" fill="#10b981" />
                 <ReferenceLine
                   y={weeklyJobGoal}
                   stroke="red"
@@ -138,7 +138,7 @@ export default function MetricsPage() {
             <h2 className="mb-2 text-lg font-semibold">
               Weekly Coding Practice
             </h2>
-            <ResponsiveContainer width="100%" height={300}>
+            <ResponsiveContainer width="100%" height={450}>
               <BarChart
                 data={codingPracticeData}
                 margin={{ top: 20, right: 30, left: 20, bottom: 5 }}
@@ -148,7 +148,7 @@ export default function MetricsPage() {
                 <YAxis />
                 <Tooltip />
                 <Legend />
-                <Bar dataKey="questions" fill="#3b82f6" />
+                <Bar dataKey="Questions" fill="#3b82f6" />
                 <ReferenceLine
                   y={weeklyCodingGoal}
                   stroke="red"
