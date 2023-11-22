@@ -148,34 +148,34 @@ export default function ApplicationPage() {
           <nav className="mr-12 flex flex-row gap-3">
             <NavLink
               to={`/dashboard/edit/${id}/notes`}
-              className=" w-[110px] rounded-lg bg-primary px-2 py-1 text-center hover:translate-y-[-2px] hover:bg-secondary"
+              className=" w-[120px] rounded-lg bg-primary px-2 py-1 text-center hover:translate-y-[-2px] hover:bg-secondary"
             >
               Notes 📝
             </NavLink>
             <NavLink
               to={`/dashboard/edit/${id}/interview`}
-              className=" w-[110px] rounded-lg bg-primary px-2 py-1 text-center hover:translate-y-[-2px] hover:bg-secondary"
+              className=" w-[120px] rounded-lg bg-primary px-2 py-1 text-center hover:translate-y-[-2px] hover:bg-secondary"
             >
               Interview 💼
             </NavLink>
             <NavLink
               to={`/dashboard/edit/${id}/reminders`}
-              className=" w-[110px] rounded-lg bg-primary px-2 py-1 text-center hover:translate-y-[-2px] hover:bg-secondary"
+              className=" w-[120px] rounded-lg bg-primary px-2 py-1 text-center hover:translate-y-[-2px] hover:bg-secondary"
             >
               Reminders 🔔
             </NavLink>
             <NavLink
               to={`/dashboard/edit/${id}/contacts`}
-              className=" w-[110px] rounded-lg bg-primary px-2 py-1 text-center hover:translate-y-[-2px] hover:bg-secondary"
+              className=" w-[120px] rounded-lg bg-primary px-2 py-1 text-center hover:translate-y-[-2px] hover:bg-secondary"
             >
               Contacts 👤
             </NavLink>
-            <NavLink
+            {/* <NavLink
               to={`/dashboard/edit/${id}/documents`}
               className=" w-[110px] rounded-lg bg-primary px-2 py-1 text-center hover:translate-y-[-2px] hover:bg-secondary"
             >
               Documents 📁
-            </NavLink>
+            </NavLink> */}
             <button
               className=" w-[60px] rounded-lg bg-red-600 px-2 py-1 text-center hover:translate-y-[-2px] hover:bg-red-800"
               onClick={() =>

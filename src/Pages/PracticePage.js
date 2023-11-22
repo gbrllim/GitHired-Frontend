@@ -9,30 +9,42 @@ import NewTopic from "../Components/PracticePage/NewTopic";
 import ProgressBar from "../Components/PracticePage/ProgressBar";
 import Problem from "../Components/PracticePage/Problem";
 
-//-----------Media-----------//
+//-----------Utitlies-----------//
+import { bearerToken } from "../Utilities/token";
 
 export default function PracticePage() {
+  const token = localStorage.getItem("token");
+
+  const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
+  const [editingQuestion, setEditingQuestion] = useState(null);
   const [openTopic, setOpenTopic] = useState(null);
-  const BACKEND_URL = process.env.REACT_APP_BACKEND_URL; 
-  const [editingQuestion, setEditingQuestion] = useState(null)
 
   const [topics, setTopics] = useState([]);
 
-const handleEditClick = async (id) => {
-  try {
-    const response = await axios.get(`${BACKEND_URL}/questions/${id}`);
-    const questionData = response.data.data; 
-    console.log(questionData)
-    setEditingQuestion(questionData);
-    document.getElementById("new_question_modal").showModal();
-  } catch (error) {
-    console.error("Error fetching question details: ", error);
-  }
-};
+  const handleEditClick = async (id) => {
+    try {
+      // Get the question data and passing this into new question to edit
+      const response = await axios.get(
+        `${BACKEND_URL}/questions/${id}`,
+        bearerToken(token),
+      );
+      const questionData = response.data.data;
+      console.log(questionData);
+      setEditingQuestion(questionData);
+      document.getElementById("new_question_modal").showModal();
+    } catch (error) {
+      console.error("Error fetching question details: ", error);
+    }
+  };
 
+  // Initial data pull
   useEffect(() => {
+    refreshQuestions();
+  }, []);
+
+  const refreshQuestions = () => {
     axios
-      .get(`${BACKEND_URL}/questions/getAllQuestions`)
+      .get(`${BACKEND_URL}/questions/getAllQuestions`, bearerToken(token))
       .then((response) => {
         const questions = response.data.data;
         const categories = response.data.categories;
@@ -74,7 +86,7 @@ const handleEditClick = async (id) => {
       .catch((error) => {
         console.error("Error fetching data: ", error);
       });
-  }, []);
+  };
 
   const toggleSolved = async (topicIndex, problemIndex) => {
     // Create a new copy of topics with the updated status
@@ -107,6 +119,7 @@ const handleEditClick = async (id) => {
         {
           statusId: updatedProblem.statusId,
         },
+        bearerToken(token),
       );
 
       setTopics(newTopics);
@@ -116,48 +129,45 @@ const handleEditClick = async (id) => {
   };
 
   const toggleStarred = async (topicIndex, problemIndex) => {
-     const newTopics = topics.map((topic, tIndex) => {
-    if (tIndex === topicIndex) {
-      return {
-        ...topic,
-        problems: topic.problems.map((problem, pIndex) => {
-          if (pIndex === problemIndex) {
-            // Toggle the starred status and return a new problem object
-            return {
-              ...problem,
-              starred: !problem.starred,
-            };
-          }
-          return problem;
-        }),
-      };
-    }
-    return topic;
-  });
+    const newTopics = topics.map((topic, tIndex) => {
+      if (tIndex === topicIndex) {
+        return {
+          ...topic,
+          problems: topic.problems.map((problem, pIndex) => {
+            if (pIndex === problemIndex) {
+              // Toggle the starred status and return a new problem object
+              return {
+                ...problem,
+                starred: !problem.starred,
+              };
+            }
+            return problem;
+          }),
+        };
+      }
+      return topic;
+    });
 
-  const updatedProblem = newTopics[topicIndex].problems[problemIndex];
+    const updatedProblem = newTopics[topicIndex].problems[problemIndex];
 
-  try {
-    await axios.put(
-      `${BACKEND_URL}/questions/edit/${updatedProblem.id}`,
-      {
+    try {
+      await axios.put(`${BACKEND_URL}/questions/edit/${updatedProblem.id}`, {
         starred: updatedProblem.starred,
-      },
-    );
-    // Update the state only if backend update is successful
-    setTopics(newTopics);
-  } catch (error) {
-    console.error("Error updating question: ", error);
-  }
+      });
+      // Update the state only if backend update is successful
+      setTopics(newTopics);
+    } catch (error) {
+      console.error("Error updating question: ", error);
+    }
   };
 
-    const calculateCompletionRate = (problems) => {
-      const totalProblems = problems.length;
-      const solvedProblems = problems.filter(
-        (problem) => problem.statusId === 1,
-      ).length;
-      return (solvedProblems / totalProblems) * 100; // returns a percentage
-    };
+  const calculateCompletionRate = (problems) => {
+    const totalProblems = problems.length;
+    const solvedProblems = problems.filter(
+      (problem) => problem.statusId === 1,
+    ).length;
+    return (solvedProblems / totalProblems) * 100; // returns a percentage
+  };
 
   return (
     <div className="flex h-screen flex-col items-center justify-center bg-background">
@@ -209,9 +219,12 @@ const handleEditClick = async (id) => {
               )}
             </div>
           ))}
-          <NewTopic />
+          <NewTopic refreshing={refreshQuestions} />
         </div>
-        <NewQuestion topics={topics} editingQuestion={editingQuestion} />
+        <NewQuestion
+          editingQuestion={editingQuestion}
+          refresh={refreshQuestions}
+        />
       </div>
     </div>
   );

@@ -8,7 +8,7 @@ const RotatingWords = ({ words }) => {
   useEffect(() => {
     const intervalId = setInterval(() => {
       setIndex((prevIndex) => (prevIndex + 1) % words.length);
-    }, 1000);
+    }, 1400);
 
     return () => clearInterval(intervalId);
   }, [words.length]);
@@ -22,7 +22,7 @@ const RotatingWords = ({ words }) => {
     <div className="m-2 ml-8 flex w-[420px] flex-row">
       <h1 className="mr-2 text-[2em] text-text">Manage your</h1>
       <motion.h1
-        className="mr-2 text-[2em] text-primary"
+        className="mr-2 text-[2em] font-bold text-secondary"
         key={index}
         variants={wordVariants}
         initial="hidden"

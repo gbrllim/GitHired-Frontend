@@ -1,19 +1,19 @@
 //-----------Library-----------//
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import axios from "axios";
 
 //-----------Components-----------//
 import InputText from "../../Details/InputText";
 import Button from "../../Details/Button";
-import { useNavigate } from "react-router-dom";
 
+//-----------Utitlies-----------//
+import { bearerToken } from "../../Utilities/token";
 
-const NewTopic = () => {
+const NewTopic = ({ refreshing }) => {
+  const token = localStorage.getItem("token");
   const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
 
-  const navigate = useNavigate();
   const [topicName, setTopicName] = useState("");
-
 
   const textChange = (e) => {
     setTopicName(e.target.value);
@@ -25,28 +25,30 @@ const NewTopic = () => {
   };
 
   const postNewCategory = async () => {
-
     if (!isFilled()) return;
 
     try {
-      const response = await axios.post(`${BACKEND_URL}/questions/newCategory`, {
-        categoryName: topicName,
-      });
+      const response = await axios.post(
+        `${BACKEND_URL}/questions/newCategory`,
+        {
+          categoryName: topicName,
+        },
+        bearerToken(token),
+      );
       console.log("Response:", response.data);
-      setTopicName(""); 
+      setTopicName("");
+      refreshing();
       document.getElementById("new_topic_modal").close();
     } catch (err) {
       console.error("Error posting new topic: ", err);
     }
-    };
+  };
 
   return (
     <div>
       <button
         className="mt-0.4 w-full rounded bg-gray-700 p-3 text-left text-white"
-        onClick={() =>
-          document.getElementById("new_topic_modal").showModal()
-        }
+        onClick={() => document.getElementById("new_topic_modal").showModal()}
       >
         + <strong>Add New Topic</strong>
       </button>

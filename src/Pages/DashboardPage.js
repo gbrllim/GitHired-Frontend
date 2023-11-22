@@ -8,86 +8,35 @@ import { motion } from "framer-motion";
 import NavBar from "../Details/NavBar";
 import Dashboard from "../Components/DashboardPage/Dashboard";
 import NewApplication from "../Components/DashboardPage/NewApplication";
-import InvalidTokenAlert from "../Details/InvalidTokenAlert";
 
-//-----------Utlities-----------//
+//-----------Utilities-----------//
 import { bearerToken } from "../Utilities/token";
 
 export default function DashboardPage() {
   const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
-  const token = localStorage.getItem("token");
-  const navigate = useNavigate();
-
-  // Store user data
-  const [formInfo, setFormInfo] = useState({
-    id: "",
-    email: "",
-    firstName: "",
-    profilePic: null,
-  });
+  // const [token, setToken] = useState("");
 
   // Store application data
   const [data, setData] = useState(null);
 
-  // State trackers
-  const [countdown, setCountdown] = useState(30);
-  const [showFailedAlert, setShowFailedAlert] = useState(false);
-
-  // Token management
+  // Token management - Set token and refresh applications
   useEffect(() => {
-    // Attempt to Retrieve token from search params
-    let storedToken;
     const tokenRetrieved = new URLSearchParams(window.location.search).get(
       "token",
     );
-
-    // If token retrieved, store in local storage
     if (tokenRetrieved) {
+      const token = tokenRetrieved;
       localStorage.setItem("token", tokenRetrieved);
-      console.log("Param Token Retrieved", tokenRetrieved);
+      console.log("Param token stored in localStorage", tokenRetrieved);
+      refreshApps(token);
     } else {
-      // If not attempt to retrieve from local storage
-      storedToken = localStorage.getItem("token");
-      console.log("Stored Token Retrieved", storedToken);
-    }
-
-    const token = tokenRetrieved ?? storedToken;
-    console.log("Token", token);
-
-    if (token) {
-      // Retrieve user info
-      axios
-        .get(`${BACKEND_URL}/users/data`, bearerToken(token))
-        .then((response) => {
-          console.log("Token is valid", response.data.userData);
-          const { id, email, firstName, profilePic } = response.data.userData;
-          setFormInfo({
-            ...formInfo,
-            id: id,
-            email: email,
-            firstName: firstName,
-            profilePic: profilePic,
-          });
-          refreshApps(); // Pull user applications info
-        })
-        .catch((error) => {
-          console.log("Token not valid", error);
-          localStorage.removeItem("token"); // Remove existing tokens if not valid + timeout
-          setShowFailedAlert(true);
-          const countdownInterval = setInterval(() => {
-            setCountdown((prevCount) => prevCount - 1);
-          }, 1000);
-          setTimeout(() => {
-            clearInterval(countdownInterval);
-            navigate("/");
-          }, 30000);
-        });
-    } else {
-      console.log("No Token Found");
+      const token = localStorage.getItem("token");
+      refreshApps(token);
     }
   }, []);
 
-  const refreshApps = () => {
+  // Retrieve all applications for the user
+  const refreshApps = (token) => {
     axios
       .get(`${BACKEND_URL}/users/applications`, bearerToken(token)) // Endpoint: /users/:userId/applications
       .then((response) => {
@@ -101,7 +50,6 @@ export default function DashboardPage() {
           "Offer",
           "Archive",
         ];
-
         // Grouping applications in "data" by status
         const groupedApps = {};
 
@@ -127,15 +75,10 @@ export default function DashboardPage() {
       }}
       className="flex h-screen flex-col overflow-x-auto bg-background"
     >
-      <div className="flex w-screen justify-center">
-        {showFailedAlert && <InvalidTokenAlert countdown={countdown} />}
-      </div>
-
-      <NavBar name={formInfo.firstName} profilePic={formInfo.profilePic} />
-
+      <NavBar />
       <Dashboard appGroup={data} />
       <Outlet context={refreshApps} />
-      <NewApplication userId={formInfo.id} refresh={refreshApps} />
+      <NewApplication refresh={refreshApps} />
     </motion.div>
   );
 }

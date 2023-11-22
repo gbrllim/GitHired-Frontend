@@ -7,30 +7,32 @@ import InputText from "../../Details/InputText";
 import Button from "../../Details/Button";
 import { useNavigate } from "react-router-dom";
 
+//-----------Utilities-----------//
+import { bearerToken } from "../../Utilities/token";
+
 const initialFormState = {
-    userId: 1,
-    categoryName: "",
-    title: "",
-    link: "",
-    difficultyId: "",
-    statusId: false,
-    platformId: "",
-    notes: "",
-    starred: false,
-  };
+  categoryId: "",
+  title: "",
+  link: "",
+  difficultyId: "",
+  statusId: false,
+  platformId: "",
+  notes: "",
+  starred: false,
+};
 
-const NewQuestion = ({ topics, editingQuestion }) => {
+const NewQuestion = ({ editingQuestion, refresh }) => {
+  const token = localStorage.getItem("token");
   const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
-
   const navigate = useNavigate();
 
   const [formInfo, setFormInfo] = useState(initialFormState);
-  const [buttonLabel, setButtonLabel] = useState("Create")
+  const [buttonLabel, setButtonLabel] = useState("Create");
+  const [topics, setTopics] = useState(null);
 
-    const resetForm = () => {
-      setFormInfo(initialFormState);
-    };
-
+  const resetForm = () => {
+    setFormInfo(initialFormState);
+  };
 
   const textChange = (e) => {
     const name = e.target.id;
@@ -41,28 +43,16 @@ const NewQuestion = ({ topics, editingQuestion }) => {
   };
 
   const selectChange = (e) => {
-    const {name, value} = e.target;
-
-   if (name === "categoryName") {
-     const selectedCategory = topics.find((topic) => topic.name === value);
-     setFormInfo((prevState) => ({
-       ...prevState,
-       categoryName: selectedCategory ? selectedCategory.name : "",
-     }));
-   } else {
-     setFormInfo((prevState) => ({
-       ...prevState,
-       [name]: value,
-     }));
-   }
+    const name = e.target.id;
+    const value = e.target.value;
+    setFormInfo((prevState) => {
+      return { ...prevState, [name]: value };
+    });
   };
 
   //Data validation
   const isFilled = () => {
-    return (
-      formInfo.title.trim() !== "" &&
-      formInfo.link.trim() !== "" 
-    ); 
+    return formInfo.title.trim() !== "" && formInfo.link.trim() !== "";
   };
 
   const toggleStarred = () => {
@@ -76,36 +66,44 @@ const NewQuestion = ({ topics, editingQuestion }) => {
     console.log("Data sending", formInfo);
 
     const isEditing = editingQuestion != null;
-    console.log(editingQuestion.id)
     const url = isEditing
       ? `${BACKEND_URL}/questions/edit/${editingQuestion.id}` // URL for updating
-      : `${BACKEND_URL}/questions/questionInCategory`;
+      : `${BACKEND_URL}/questions/create`;
 
-   const requestData = {
-     categoryName: formInfo.categoryName, // Name of the category
-     questionData: {
-       ...formInfo,
-       statusId: formInfo.statusId ? 1 : 2, 
-       userId: 1, // Have to change this
-     },
-   };
+    const requestData = {
+      categoryName: formInfo.categoryName, // Name of the category
+      questionData: {
+        ...formInfo,
+        statusId: formInfo.statusId ? 1 : 2,
+      },
+    };
 
-  console.log(requestData)
+    console.log("Data to be sent", requestData.questionData);
 
-   try {
-     const response = isEditing
-       ? await axios.put(url, requestData)
-       : await axios.post(url,requestData);
-     
-     console.log("Response:", response.data)
-     resetForm();
-     setButtonLabel("Create")
+    try {
+      const response = isEditing
+        ? await axios.put(url, requestData.questionData, bearerToken(token))
+        : await axios.post(url, requestData.questionData, bearerToken(token));
 
-   } catch (err) {
-     console.error("Error posting/updating question: ", err);
-   }
+      resetForm();
+      refresh();
+      setButtonLabel("Create");
+    } catch (err) {
+      console.error("Error posting/updating question: ", err);
+    }
   };
 
+  // Pull topics from db
+  useEffect(() => {
+    axios
+      .get(`${BACKEND_URL}/questions/categories`, bearerToken(token))
+      .then((response) => {
+        console.log("Topics Pull", response.data.categories);
+        setTopics(response.data.categories);
+      });
+  }, []);
+
+  // Pre-fill the formInfo
   useEffect(() => {
     if (editingQuestion) {
       console.log(editingQuestion);
@@ -114,7 +112,6 @@ const NewQuestion = ({ topics, editingQuestion }) => {
       const category = topics[categoryIndex];
 
       setFormInfo({
-        userId: 1, // or editingQuestion.userId
         categoryName: category ? category.name : "",
         title: editingQuestion.title,
         link: editingQuestion.link,
@@ -138,15 +135,14 @@ const NewQuestion = ({ topics, editingQuestion }) => {
     }));
   };
 
-    const closeModal = () => {
-      document.getElementById("new_question_modal").close();
-    };
+  const closeModal = () => {
+    document.getElementById("new_question_modal").close();
+  };
 
-    const handleSave = () => {
-      postNewQuestion();
-      closeModal();
-    };
-
+  const handleSave = () => {
+    postNewQuestion();
+    closeModal();
+  };
 
   return (
     <div>
@@ -166,10 +162,11 @@ const NewQuestion = ({ topics, editingQuestion }) => {
             </button>
           </form>
           <h1 className=" text-[20px] font-bold ">
-            {editingQuestion ? "Edit Question" : "Add New Question"} 
+            {editingQuestion ? "Edit Question" : "Add New Question"}
           </h1>
           <h2 className=" mb-2 text-[10px] ">
-            {editingQuestion ? "" : "* indicates a required field"}</h2>
+            {editingQuestion ? "" : "* indicates a required field"}
+          </h2>
           <form className="grid grid-cols-2 gap-y-1 text-black">
             <p className="">Title: *</p>
             <InputText
@@ -199,11 +196,12 @@ const NewQuestion = ({ topics, editingQuestion }) => {
               <option value="" disabled>
                 Choose One
               </option>
-              {topics.map((topic, index) => (
-                <option key={index} value={topic.name}>
-                  {topic.name}
-                </option>
-              ))}
+              {topics &&
+                topics.map((topic, index) => (
+                  <option key={index} value={topic.id}>
+                    {topic.categoryName}
+                  </option>
+                ))}
             </select>
 
             <p>Platform: *</p>
