@@ -11,14 +11,15 @@ import RotatingWords from "../Components/HomePage/RotatingWords";
 
 //-----------Media-----------//
 import logo from "../Images/Logo-GitHired.svg";
-import demo from "../Images/Mock-demo.png";
+import demo from "../Images/mock-dashboard.png";
+import wallpaper from "../Images/gh-wallpaper.png";
 
 export default function HomePage() {
   const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
 
   const rotatingText = ["Applications", "Reminders", "Questions", "Notes"];
   const [data, setData] = useState({ email: "" });
-  const [message, setMessage] = useState("");
+  const [message, setMessage] = useState(null);
   const [success, setSuccess] = useState(false);
 
   const sendMagicLinkEmail = async () => {
@@ -46,35 +47,38 @@ export default function HomePage() {
         duration: 0.8,
         ease: "easeInOut",
       }}
-      className=" flex h-screen flex-row items-center justify-center bg-background"
+      className=" flex h-screen flex-row items-center justify-center bg-cover"
+      style={{ backgroundImage: `url(${wallpaper})` }}
     >
       <main className="flex w-1/2 flex-col items-center justify-center">
-        <img src={logo} className="scale-125" alt="GitHired Logo" />
-        <RotatingWords words={rotatingText} />
-        <p className="mb-2 rounded-lg bg-secondary px-2">{message}</p>
-        {!success && (
-          <div className="flex flex-row">
-            <form>
-              <InputText
-                placeholder="Enter your email"
-                id="email"
-                value={data.email}
-                handleChange={(e) => {
-                  setData({ ...data, email: e.target.value });
-                }}
+        <div className="flex flex-col items-center justify-center px-10 py-12 shadow-lg backdrop-blur-xl">
+          <img src={logo} className="scale-125" alt="GitHired Logo" />
+          <RotatingWords words={rotatingText} />
+          {message && (
+            <p className="my-2 rounded-lg bg-secondary px-2 py-1">{message}</p>
+          )}
+          {!success && (
+            <div className="flex flex-row">
+              <form className="">
+                <InputText
+                  placeholder="Enter your email"
+                  id="email"
+                  value={data.email}
+                  handleChange={(e) => {
+                    setData({ ...data, email: e.target.value });
+                  }}
+                />
+              </form>
+              <Button
+                label="Enter"
+                handleClick={sendMagicLinkEmail}
+                disabled={!isFilled()}
               />
-            </form>
-            <Button
-              label="Enter"
-              handleClick={sendMagicLinkEmail}
-              disabled={!isFilled()}
-            />
-          </div>
-        )}
-        <NavLink to="/onboarding">Onboarding Flow</NavLink>
-        <NavLink to="/dashboard">Try the app</NavLink>
+            </div>
+          )}
+        </div>
       </main>
-      <article className=" flex h-full w-1/2 items-center justify-center bg-primary">
+      <article className=" flex h-full w-1/2 items-center justify-center">
         <img
           className="max-h-[400px]"
           src={demo}

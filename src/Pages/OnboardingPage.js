@@ -19,6 +19,7 @@ import { bearerToken } from "../Utilities/token.js";
 //-----------Media-----------//
 import logo from "../Images/Logo-GitHired.svg";
 import defaultProfile from "../Images/defaultProfile.png";
+import wallpaper from "../Images/gh-wallpaper.png";
 import "./OnboardingPage.css";
 
 export default function OnboardingPage() {
@@ -124,8 +125,15 @@ export default function OnboardingPage() {
     }
   };
 
+  const tooltipStyle = {
+    "--tooltip-color": "#1c3f58", // Change this to the desired color
+  };
+
   return (
-    <div className="flex h-screen flex-row items-center justify-center bg-background">
+    <div
+      className="flex h-screen flex-row items-center justify-center bg-cover "
+      style={{ backgroundImage: `url(${wallpaper})` }}
+    >
       {showFailedAlert && <InvalidTokenAlert countdown={countdown} />}
       <main className="flex w-1/2 flex-col items-center justify-center">
         {goals ? (
@@ -159,7 +167,11 @@ export default function OnboardingPage() {
         ) : (
           <>
             <form className="flex flex-col items-center justify-center gap-2 text-black">
-              <div className="tooltip " data-tip="📸 Upload Profile Picture!">
+              <div
+                className="tooltip "
+                data-tip="📸 Upload Profile Picture!"
+                style={tooltipStyle}
+              >
                 <label htmlFor="profile-picture" style={{ cursor: "pointer" }}>
                   <ProfileImage
                     src={
@@ -199,8 +211,12 @@ export default function OnboardingPage() {
           </>
         )}
       </main>
-      <section className="flex h-full w-1/2 items-center justify-center bg-primary">
-        <img src={logo} alt="Githired" />
+      <section className="flex h-full w-1/2 items-center justify-center">
+        <img
+          src={logo}
+          alt="Githired"
+          className="h-[200px] translate-x-[-100px]"
+        />
       </section>
     </div>
   );
