@@ -1,5 +1,5 @@
 //-----------Libaries-----------//
-import React from "react";
+import {React, useEffect, useState} from "react";
 import {
   BarChart,
   Bar,
@@ -9,48 +9,154 @@ import {
   Tooltip,
   Legend,
   ResponsiveContainer,
-  ReferenceLine
+  ReferenceLine,
 } from "recharts";
+import axios from "axios";
 
 //-----------Components-----------//
 import NavBar from "../Details/NavBar";
 
-//-----------Dummy Data-----------//
-const jobApplicationsData = [
-  { week: "5", Applications: 5 },
-  { week: "6", Applications: 5 },
-  { week: "7", Applications: 8 },
-  { week: "8", Applications: 6 },
-  { week: "9", Applications: 10 },
-  { week: "10", Applications: 12 },
-  { week: "11", Applications: 13 },
-  { week: "12", Applications: 14 },
-  { week: "13", Applications: 5 },
-];
+//-----------Utilities-----------//
+import {bearerToken} from "../Utilities/token";
 
-const codingPracticeData = [
-  { week: "5", Questions: 3 },
-  { week: "6", Questions: 4 },
-  { week: "7", Questions: 7 },
-  { week: "8", Questions: 8 },
-  { week: "9", Questions: 9 },
-  { week: "10", Questions: 10 },
-  { week: "11", Questions: 11 },
-  { week: "12", Questions: 12 },
-  { week: "13", Questions: 3 },
-];
+//-----------Dummy Data-----------//
+// const jobApplicationsData = [
+//   { week: "5", Applications: 5 },
+//   { week: "6", Applications: 5 },
+//   { week: "7", Applications: 8 },
+//   { week: "8", Applications: 6 },
+//   { week: "9", Applications: 10 },
+//   { week: "10", Applications: 12 },
+//   { week: "11", Applications: 13 },
+//   { week: "12", Applications: 14 },
+//   { week: "13", Applications: 5 },
+// ];
+
+// const codingPracticeData = [
+//   { week: "5", Questions: 3 },
+//   { week: "6", Questions: 4 },
+//   { week: "7", Questions: 7 },
+//   { week: "8", Questions: 8 },
+//   { week: "9", Questions: 9 },
+//   { week: "10", Questions: 20 },
+//   { week: "11", Questions: 18 },
+//   { week: "12", Questions: 25 },
+//   { week: "13", Questions: 3 },
+// ];
 
 //-----------Media-----------//
 
 export default function MetricsPage() {
-  const latestJobApplications =
-    jobApplicationsData[jobApplicationsData.length - 1].Applications;
-  const latestCodingQuestions =
-    codingPracticeData[codingPracticeData.length - 1].Questions;
+  const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
+  const token = localStorage.getItem("token");
 
   // Weekly goals: reference lines
-  const weeklyJobGoal = 10; // goal for job applications
-  const weeklyCodingGoal = 5; // goal for coding questions
+  const [applicationGoalCount, setApplicationGoalCount] = useState(0);
+  const [questionsGoalCount, setQuestionsGoalCount] = useState(0);
+  const [applications, setApplications] = useState([]);
+  const [processedJobApplicationsData, setProcessedJobApplicationsData] =
+    useState([]);
+  const [questions, setQuestions] = useState([]);
+  const [processedQuestionsData, setProcessedQuestionsData] = useState([]);
+
+  // GET - Retrieve user data from Backend for user
+  useEffect(() => {
+    axios
+      .get(`${BACKEND_URL}/users/data`, bearerToken(token)) // Endpoint: users/data
+      .then((response) => {
+        console.log("Single Application Endpoint", response.data.userData);
+        setApplicationGoalCount(response.data.userData.applicationGoalCount);
+        setQuestionsGoalCount(response.data.userData.questionsGoalCount);
+      });
+  }, []);
+
+  // GET - Retrieve applications from Backend
+  useEffect(() => {
+    axios
+      .get(`${BACKEND_URL}/users/applications`, bearerToken(token)) // Endpoint: users/applications
+      .then((response) => {
+        console.log("Single Application Startp", response.data.applications);
+        setApplications(response.data.applications);
+      });
+  }, []);
+
+  useEffect(() => {
+    const getWeekNumber = (d) => {
+      const date = new Date(d.getTime());
+      date.setUTCDate(date.getUTCDate() + 4 - (date.getUTCDay() || 7));
+      const yearStart = new Date(Date.UTC(date.getUTCFullYear(), 0, 1));
+      return Math.ceil(((date - yearStart) / 86400000 + 1) / 7);
+    };
+
+    const weeklySummary = applications.reduce((acc, application) => {
+      const applicationDate = new Date(application.applicationDate);
+      const weekNumber = getWeekNumber(applicationDate);
+      acc[weekNumber] = (acc[weekNumber] || 0) + 1;
+      return acc;
+    }, {});
+
+    const jobApplicationsData = Object.keys(weeklySummary).map((week) => ({
+      week: week.toString(),
+      Applications: weeklySummary[week],
+    }));
+
+    setProcessedJobApplicationsData(jobApplicationsData);
+  }, [applications]);
+
+  const latestJobApplications =
+    processedJobApplicationsData.length > 0
+      ? processedJobApplicationsData[processedJobApplicationsData.length - 1]
+          .Applications
+      : 0;
+
+  // GET - Retrieve questions from Backend
+
+    useEffect(() => {
+      axios
+        .get(`${BACKEND_URL}/users/questions`, bearerToken(token)) // Endpoint: users/questions
+        .then((response) => {
+          console.log("Questions", response.data.questions);
+          setQuestions(response.data.questions);
+        });
+    }, []);
+
+      useEffect(() => {
+        const getWeekNumber = (d) => {
+          const date = new Date(d.getTime());
+          date.setUTCDate(date.getUTCDate() + 4 - (date.getUTCDay() || 7));
+          const yearStart = new Date(Date.UTC(date.getUTCFullYear(), 0, 1));
+          return Math.ceil(((date - yearStart) / 86400000 + 1) / 7);
+        }
+
+       const weeklySolvedQuestionsSummary = {};
+
+       questions.forEach((question) => {
+         if (question.statusId === 1) {
+           const updatedDate = new Date(question.updatedAt);
+           const weekNumber = getWeekNumber(updatedDate);
+
+           if (!weeklySolvedQuestionsSummary[weekNumber]) {
+             weeklySolvedQuestionsSummary[weekNumber] = 0;
+           }
+           weeklySolvedQuestionsSummary[weekNumber]++;
+         }
+       });
+
+        const codingPracticeData = Object.keys(
+          weeklySolvedQuestionsSummary,
+        ).map((week) => ({
+          week: week.toString(),
+          Questions: weeklySolvedQuestionsSummary[week],
+        }));
+
+        setProcessedQuestionsData(codingPracticeData);
+      }, [questions]);
+
+      const latestCodingQuestions =
+        processedQuestionsData.length > 0 ?
+        processedQuestionsData[
+          processedQuestionsData.length - 1].Questions : 0;
+        
 
   return (
     <div className="flex h-screen flex-col bg-background">
@@ -65,14 +171,16 @@ export default function MetricsPage() {
               <div className="mb-1 flex justify-between">
                 <span>Job Applications</span>
                 <span>
-                  {latestJobApplications}/{weeklyJobGoal}
+                  {latestJobApplications}/{applicationGoalCount}
                 </span>
               </div>
               <div className="h-6 w-full rounded-full bg-gray-600">
                 <div
                   className="h-full rounded-full bg-green-500"
                   style={{
-                    width: `${(latestJobApplications / weeklyJobGoal) * 100}%`,
+                    width: `${
+                      (latestJobApplications / applicationGoalCount) * 100
+                    }%`,
                   }}
                 ></div>
               </div>
@@ -81,7 +189,7 @@ export default function MetricsPage() {
               <div className="mb-1 flex justify-between">
                 <span>Coding Practice</span>
                 <span>
-                  {latestCodingQuestions}/{weeklyCodingGoal}
+                  {latestCodingQuestions}/{questionsGoalCount}
                 </span>
               </div>
               <div className="h-6 w-full rounded-full bg-gray-600">
@@ -89,7 +197,7 @@ export default function MetricsPage() {
                   className="h-full rounded-full bg-blue-500"
                   style={{
                     width: `${
-                      (latestCodingQuestions / weeklyCodingGoal) * 100
+                      (latestCodingQuestions / questionsGoalCount) * 100
                     }%`,
                   }}
                 ></div>
@@ -115,7 +223,7 @@ export default function MetricsPage() {
             </h2>
             <ResponsiveContainer width="100%" height={450}>
               <BarChart
-                data={jobApplicationsData}
+                data={processedJobApplicationsData}
                 margin={{ top: 20, right: 30, left: 20, bottom: 5 }}
               >
                 <CartesianGrid strokeDasharray="3 3" />
@@ -125,7 +233,7 @@ export default function MetricsPage() {
                 <Legend />
                 <Bar dataKey="Applications" fill="#10b981" />
                 <ReferenceLine
-                  y={weeklyJobGoal}
+                  y={applicationGoalCount}
                   stroke="red"
                   strokeDasharray="3 3"
                 />
@@ -140,7 +248,7 @@ export default function MetricsPage() {
             </h2>
             <ResponsiveContainer width="100%" height={450}>
               <BarChart
-                data={codingPracticeData}
+                data={processedQuestionsData}
                 margin={{ top: 20, right: 30, left: 20, bottom: 5 }}
               >
                 <CartesianGrid strokeDasharray="3 3" />
@@ -150,7 +258,7 @@ export default function MetricsPage() {
                 <Legend />
                 <Bar dataKey="Questions" fill="#3b82f6" />
                 <ReferenceLine
-                  y={weeklyCodingGoal}
+                  y={questionsGoalCount}
                   stroke="red"
                   strokeDasharray="3 3"
                 />
