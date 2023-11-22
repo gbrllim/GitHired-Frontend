@@ -1,18 +1,53 @@
 //-----------Libaries-----------//
-import { NavLink } from "react-router-dom";
+import axios from "axios";
+import { useEffect, useState } from "react";
+import { NavLink, useNavigate } from "react-router-dom";
+
+//-----------Components-----------//
+import InvalidTokenAlert from "./InvalidTokenAlert";
+
+//-----------Utilities-----------//
+import { bearerToken } from "../Utilities/token";
 
 //-----------Media-----------//
 import logo from "../Images/Logo-GitHired.svg";
-import { useNavigate } from "react-router-dom";
 
-const NavBar = ({ name, profilePic }) => {
+const NavBar = () => {
+  const token = localStorage.getItem("token");
+  const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
   const navigate = useNavigate();
+
+  const [name, setName] = useState("");
+  const [profilePic, setProfilePic] = useState("");
+
+  useEffect(() => {
+    const fetchData = async () => {
+      try {
+        const response = await axios.get(
+          `${BACKEND_URL}/users/data`,
+          bearerToken(token),
+        );
+        const userData = response.data.userData;
+        setName(userData.firstName);
+        setProfilePic(userData.profilePic);
+      } catch (error) {
+        setName("");
+        setProfilePic("");
+        console.error("Error fetching user data:", error);
+      }
+    };
+
+    fetchData();
+  }, [token]);
 
   const handleClick = () => {
     navigate("/");
   };
+
   return (
     <div className="fixed top-0 flex w-screen flex-row items-center justify-between bg-primary px-3 py-1">
+      {/* Token check alert across all pages */}
+      <InvalidTokenAlert />
       <section className="z-20 flex flex-row gap-2">
         <NavLink to="/dashboard">Dashboard</NavLink>
         <NavLink to="/metrics">Metrics</NavLink>

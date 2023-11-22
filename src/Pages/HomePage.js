@@ -51,7 +51,7 @@ export default function HomePage() {
       style={{ backgroundImage: `url(${wallpaper})` }}
     >
       <main className="flex w-1/2 flex-col items-center justify-center">
-        <div className="flex flex-col items-center justify-center px-10 py-12 shadow-lg backdrop-blur-xl">
+        <div className="flex flex-col items-center justify-center bg-black bg-opacity-40 px-10 py-12 shadow-lg">
           <img src={logo} className="scale-125" alt="GitHired Logo" />
           <RotatingWords words={rotatingText} />
           {message && (

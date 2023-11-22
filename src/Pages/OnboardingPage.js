@@ -107,7 +107,7 @@ export default function OnboardingPage() {
     }
   }, [file]);
 
-  // ExpressJS: Create new user on backend and redirect to dashboard
+  // Create new user on backend and redirect to dashboard
   const postNewUser = async () => {
     console.log("Data sending", formInfo);
     try {
@@ -125,8 +125,9 @@ export default function OnboardingPage() {
     }
   };
 
+  // Custom styling for tooltip
   const tooltipStyle = {
-    "--tooltip-color": "#1c3f58", // Change this to the desired color
+    "--tooltip-color": "#1c3f58",
   };
 
   return (
