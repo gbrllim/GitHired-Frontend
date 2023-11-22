@@ -51,7 +51,8 @@ const NotesSection = () => {
 
   return (
     <div className="flex h-full w-full flex-row ">
-      <aside className="w-1/3 overflow-y-auto">
+      <aside className="flex w-1/3 flex-col items-center overflow-y-auto">
+        <h1 className="ml-2">Notes 📝</h1>{" "}
         <div className="flex h-[200px] flex-col">
           {console.log("data", data)}
           {data &&
