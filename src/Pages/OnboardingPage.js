@@ -13,14 +13,18 @@ import Button from "../Details/Button";
 import ProfileImage from "../Details/ProfileImage.js";
 import InvalidTokenAlert from "../Details/InvalidTokenAlert.js";
 
+//-----------Utilities-----------//
+import { bearerToken } from "../Utilities/token.js";
+
 //-----------Media-----------//
 import logo from "../Images/Logo-GitHired.svg";
 import defaultProfile from "../Images/defaultProfile.png";
 import "./OnboardingPage.css";
 
 export default function OnboardingPage() {
+  // Import constants
+  const token = localStorage.getItem("token");
   const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
-
   const navigate = useNavigate();
 
   // Variables
@@ -32,6 +36,8 @@ export default function OnboardingPage() {
     applicationsGoalCount: "",
     questionsGoalCount: "",
   });
+
+  // State management
   const [goals, setGoals] = useState(false);
   const [file, setFile] = useState(null);
   const [countdown, setCountdown] = useState(5);
@@ -66,7 +72,6 @@ export default function OnboardingPage() {
       axios
         .get(`${BACKEND_URL}/auth/retrieve-email?token=${tokenRetrieved}`)
         .then((response) => {
-          console.log(response);
           setFormInfo({ ...formInfo, email: response.data });
         })
         .catch((error) => {
@@ -103,19 +108,16 @@ export default function OnboardingPage() {
 
   // ExpressJS: Create new user on backend and redirect to dashboard
   const postNewUser = async () => {
-    // const data = {
-    //   email: "testing@rocketacademy.co",
-    //   firstName: "Walter",
-    //   lastName: "White",
-    //   profilePic: "hello",
-    //   applicationGoalCount: 5,
-    //   questionsGoalCount: 10,
-    // };
     console.log("Data sending", formInfo);
-
     try {
-      const post = await axios.post(`${BACKEND_URL}/users/newUser`, formInfo);
-      console.log("Post data", post);
+      const post = await axios.post(
+        `${BACKEND_URL}/users/newUser`,
+        formInfo,
+        bearerToken(token),
+      );
+      const refreshedToken = post.data.token;
+      localStorage.setItem("token", refreshedToken);
+      console.log("Refreshed Token", refreshedToken);
       navigate("/dashboard");
     } catch (err) {
       console.log(err);

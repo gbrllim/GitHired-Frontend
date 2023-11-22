@@ -55,12 +55,12 @@ export default function DashboardPage() {
     console.log("Token", token);
 
     if (token) {
-      // Verify token and retrieve info
+      // Retrieve user info
       axios
-        .get(`${BACKEND_URL}/auth/verify?token=${token}`)
+        .get(`${BACKEND_URL}/users/data`, bearerToken(token))
         .then((response) => {
-          console.log("Token is valid", response.data);
-          const { id, email, firstName, profilePic } = response.data;
+          console.log("Token is valid", response.data.userData);
+          const { id, email, firstName, profilePic } = response.data.userData;
           setFormInfo({
             ...formInfo,
             id: id,
@@ -89,7 +89,7 @@ export default function DashboardPage() {
 
   const refreshApps = () => {
     axios
-      .get(`${BACKEND_URL}/users/1/applications`, bearerToken(token)) // Endpoint: /users/:userId/applications
+      .get(`${BACKEND_URL}/users/applications`, bearerToken(token)) // Endpoint: /users/:userId/applications
       .then((response) => {
         console.log("Backend Data Pulled: ", response.data.applications);
         const data = response.data.applications;
@@ -135,12 +135,7 @@ export default function DashboardPage() {
 
       <Dashboard appGroup={data} />
       <Outlet context={refreshApps} />
-
-      <p className=" p-2 text-white">
-        user_id: {formInfo.id} (Remove post-development) <br></br>email:
-        {formInfo.email}
-      </p>
-      <NewApplication refresh={refreshApps} />
+      <NewApplication userId={formInfo.id} refresh={refreshApps} />
     </motion.div>
   );
 }

@@ -1,7 +1,12 @@
+//-----------Library-----------//
 import axios from "axios";
 import { useState } from "react";
 
+//-----------Utilities-----------//
+import { bearerToken } from "../../../Utilities/token";
+
 const InterviewAdd = ({ appId, refresh }) => {
+  const token = localStorage.getItem("token");
   const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
 
   const [interviewData] = useState({
@@ -14,7 +19,11 @@ const InterviewAdd = ({ appId, refresh }) => {
     console.log("data to be sent", interviewData);
 
     axios
-      .post(`${BACKEND_URL}/applications/interviews/create`, interviewData)
+      .post(
+        `${BACKEND_URL}/applications/interviews/create`,
+        interviewData,
+        bearerToken(token),
+      )
       .then((response) => {
         refresh();
       })

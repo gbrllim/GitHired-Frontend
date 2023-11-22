@@ -3,10 +3,11 @@ import axios from "axios";
 
 //-----------Components-----------//
 import Button from "../../../Details/Button";
+import { bearerToken } from "../../../Utilities/token";
 
 const NotesPreview = ({ data, select, refresh }) => {
+  const token = localStorage.getItem("token");
   const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
-
   const { id, applicationId, title, content } = data;
 
   const previewContent =
@@ -14,9 +15,12 @@ const NotesPreview = ({ data, select, refresh }) => {
 
   const deleteNote = async () => {
     axios
-      .delete(`${BACKEND_URL}/applications/notes/delete/${id}`)
+      .delete(
+        `${BACKEND_URL}/applications/notes/delete/${id}`,
+        bearerToken(token),
+      )
       .then(() => {
-        document.getElementById(`delete_modal${id}`).close();
+        document.getElementById(`delete_note_modal${id}`).close();
         refresh();
       })
       .catch((error) => {

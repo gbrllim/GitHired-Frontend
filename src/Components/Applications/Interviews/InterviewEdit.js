@@ -5,7 +5,11 @@ import { useState, useEffect } from "react";
 //-----------Components-----------//
 import InterviewAdd from "./InterviewAdd";
 
+//-----------Utilities-----------//
+import { bearerToken } from "../../../Utilities/token";
+
 const InterviewEdit = ({ currentInterview, refresh }) => {
+  const token = localStorage.getItem("token");
   const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
 
   const [interviewData, setinterviewData] = useState({
@@ -29,6 +33,7 @@ const InterviewEdit = ({ currentInterview, refresh }) => {
       .put(
         `${BACKEND_URL}/applications/interviews/edit/${interviewData.id}`,
         interviewData,
+        bearerToken(token),
       )
       .then((response) => {
         setinterviewData(response.data.data);

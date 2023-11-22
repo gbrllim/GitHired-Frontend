@@ -46,7 +46,7 @@ Backend Repo: https://github.com/sathyat20/GitHired-Backend
 # Resources Used
 
 - Setting up Magic Link Auth with JWT verification https://www.youtube.com/watch?v=b6qHfPdv4Y8
--
+- onDelete CASCADES to remove associated ids https://stackoverflow.com/questions/23128816/sequelize-js-ondelete-cascade-is-not-deleting-records-sequelize
 
 ## Launch Guide
 

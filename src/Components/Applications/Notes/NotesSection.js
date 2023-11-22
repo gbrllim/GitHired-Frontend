@@ -8,9 +8,13 @@ import NotesPreview from "./NotesPreview";
 import NotesEdit from "./NotesEdit";
 import NotesAdd from "./NotesAdd";
 
+//-----------Utilities-----------//
+import { bearerToken } from "../../../Utilities/token";
+
 const NotesSection = () => {
-  const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
   const { id } = useParams();
+  const token = localStorage.getItem("token");
+  const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
 
   const [currentNote, setCurrentNote] = useState(null);
   const [data, setData] = useState(null);
@@ -23,7 +27,7 @@ const NotesSection = () => {
   // Refresh data from db
   const refresh = () => {
     axios
-      .get(`${BACKEND_URL}/users/1/${id}/notes`)
+      .get(`${BACKEND_URL}/users/${id}/notes`, bearerToken(token))
       .then((response) => {
         setData(response.data.data);
       })
@@ -37,12 +41,12 @@ const NotesSection = () => {
     setCurrentNote(id);
   };
 
-  // Function to sort a single data point by id
+  // Function to sort a single data point by appId
   const findDataById = (id) => {
     return data && data.find((item) => item.id === id);
   };
 
-  // Request data by id
+  // Request data by appId
   const currentNoteData = findDataById(currentNote);
 
   return (

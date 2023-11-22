@@ -8,7 +8,11 @@ import InterviewAdd from "./InterviewAdd";
 import InterviewEdit from "./InterviewEdit";
 import InterviewPreview from "./InterviewPreview";
 
+//-----------Utilities-----------//
+import { bearerToken } from "../../../Utilities/token";
+
 const InterviewSection = () => {
+  const token = localStorage.getItem("token");
   const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
   const { id } = useParams();
 
@@ -23,7 +27,7 @@ const InterviewSection = () => {
   // Refresh data from db
   const refresh = () => {
     axios
-      .get(`${BACKEND_URL}/users/1/${id}/interviews`)
+      .get(`${BACKEND_URL}/users/${id}/interviews`, bearerToken(token))
       .then((response) => {
         console.log("interview data", response.data.data);
         setData(response.data.data);

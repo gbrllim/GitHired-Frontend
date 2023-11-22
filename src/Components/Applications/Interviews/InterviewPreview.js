@@ -4,7 +4,11 @@ import axios from "axios";
 //-----------Components-----------//
 import Button from "../../../Details/Button";
 
+//-----------Utilities-----------//
+import { bearerToken } from "../../../Utilities/token";
+
 const InterviewPreview = ({ data, select, refresh }) => {
+  const token = localStorage.getItem("token");
   const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
 
   const { id, applicationId, title, content } = data;
@@ -14,9 +18,12 @@ const InterviewPreview = ({ data, select, refresh }) => {
 
   const deleteInterview = async () => {
     axios
-      .delete(`${BACKEND_URL}/applications/interviews/delete/${id}`)
+      .delete(
+        `${BACKEND_URL}/applications/interviews/delete/${id}`,
+        bearerToken(token),
+      )
       .then(() => {
-        document.getElementById(`delete_modal${id}`).close();
+        document.getElementById(`delete_interview_modal${id}`).close();
         refresh();
       })
       .catch((error) => {

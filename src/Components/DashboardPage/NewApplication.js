@@ -6,15 +6,15 @@ import axios from "axios";
 import InputText from "../../Details/InputText";
 import InputDate from "../../Details/InputDate";
 import Button from "../../Details/Button";
-import { useNavigate } from "react-router-dom";
+
+//-----------Utilities-----------//
+import { bearerToken } from "../../Utilities/token";
 
 const NewApplication = ({ refresh }) => {
+  const token = localStorage.getItem("token");
   const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
 
-  const navigate = useNavigate();
-
   const [formInfo, setFormInfo] = useState({
-    userId: 1, // To change later once Auth done
     companyName: "",
     jobPosition: "",
     location: "",
@@ -62,11 +62,11 @@ const NewApplication = ({ refresh }) => {
       const post = await axios.post(
         `${BACKEND_URL}/applications/create`,
         formInfo,
+        bearerToken(token),
       );
       document.getElementById("new_application_modal").close(); // Close modal if successful
       refresh();
       setFormInfo({
-        userId: 1, // To change later once Auth done
         companyName: "",
         jobPosition: "",
         location: "",

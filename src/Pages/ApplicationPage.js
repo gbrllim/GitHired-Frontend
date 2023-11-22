@@ -14,12 +14,16 @@ import { motion } from "framer-motion";
 import InputText from "../Details/InputText";
 import InputDate from "../Details/InputDate";
 import Button from "../Details/Button";
-import DeleteModal from "../Details/DeleteModal";
+
+//-----------Utilities-----------//
+import { bearerToken } from "../Utilities/token";
 
 //-----------Media-----------//
 import logo from "../Images/favicon_io/logo192.png";
 
 export default function ApplicationPage() {
+  const token = localStorage.getItem("token");
+
   const refresh = useOutletContext();
   const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
   const navigate = useNavigate();
@@ -40,7 +44,7 @@ export default function ApplicationPage() {
   // GET - Retrieve application data from Backend
   useEffect(() => {
     axios
-      .get(`${BACKEND_URL}/applications/${id}`) // Endpoint: users/:userId/:applicationId
+      .get(`${BACKEND_URL}/applications/${id}`, bearerToken(token)) // Endpoint: users/:userId/:applicationId
       .then((response) => {
         console.log("Single Application Endpoint", response.data.data);
         setFormInfo(response.data.data);
@@ -61,7 +65,7 @@ export default function ApplicationPage() {
   // DELETE - Delete application
   const deleteApplication = () => {
     axios
-      .delete(`${BACKEND_URL}/applications/delete/${id}`)
+      .delete(`${BACKEND_URL}/applications/delete/${id}`, bearerToken(token))
       .then((response) => {
         console.log("Application Deleted", response);
         refresh();
@@ -284,7 +288,6 @@ export default function ApplicationPage() {
             <Outlet />
           </section>
         </div>
-        <DeleteModal label="application" key={id} />
       </div>
     </motion.div>
   );

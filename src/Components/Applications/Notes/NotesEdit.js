@@ -5,7 +5,11 @@ import { useState, useEffect } from "react";
 //-----------Components-----------//
 import NotesAdd from "./NotesAdd";
 
+//-----------Utilities-----------//
+import { bearerToken } from "../../../Utilities/token";
+
 const NotesEdit = ({ currentNote, refresh }) => {
+  const token = localStorage.getItem("token");
   const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
 
   const [noteData, setNoteData] = useState({
@@ -26,7 +30,11 @@ const NotesEdit = ({ currentNote, refresh }) => {
   // Edit notes data
   const updateNote = () => {
     axios
-      .put(`${BACKEND_URL}/applications/notes/edit/${noteData.id}`, noteData)
+      .put(
+        `${BACKEND_URL}/applications/notes/edit/${noteData.id}`,
+        noteData,
+        bearerToken(token),
+      )
       .then((response) => {
         setNoteData(response.data.data);
         refresh();
