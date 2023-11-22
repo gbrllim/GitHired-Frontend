@@ -48,6 +48,7 @@ export default function PracticePage() {
       .then((response) => {
         const questions = response.data.data;
         const categories = response.data.categories;
+        console.log("Questions Pulled", questions);
 
         // Difficulty
         const difficultyMap = {

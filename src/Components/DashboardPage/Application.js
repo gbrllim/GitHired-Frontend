@@ -26,7 +26,7 @@ const Application = ({ application }) => {
           {jobPosition}
         </p>
         <p className="mt-auto text-left text-[9px] leading-none text-primary">
-          {getLastUpdatedText(updatedAt)}
+          Last updated: {getLastUpdatedText(updatedAt)}
         </p>
       </div>
       <div

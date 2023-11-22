@@ -7,11 +7,11 @@ const getLastUpdatedText = (updatedAt) => {
   const daysAgo = Math.floor(hoursAgo / 24);
 
   if (minutesAgo < 60) {
-    return `Last updated: ${minutesAgo} minutes ago`;
+    return `${minutesAgo} minutes ago`;
   } else if (hoursAgo < 24) {
-    return `Last updated: ${hoursAgo} hours ago`;
+    return `${hoursAgo} hours ago`;
   } else {
-    return `Last updated: ${daysAgo} days ago`;
+    return `${daysAgo} days ago`;
   }
 };
 

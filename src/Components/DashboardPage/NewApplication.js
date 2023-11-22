@@ -65,7 +65,7 @@ const NewApplication = ({ refresh }) => {
         bearerToken(token),
       );
       document.getElementById("new_application_modal").close(); // Close modal if successful
-      refresh();
+      refresh(token);
       setFormInfo({
         companyName: "",
         jobPosition: "",
