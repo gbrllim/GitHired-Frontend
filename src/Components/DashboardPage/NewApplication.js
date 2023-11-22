@@ -8,7 +8,7 @@ import InputDate from "../../Details/InputDate";
 import Button from "../../Details/Button";
 import { useNavigate } from "react-router-dom";
 
-const NewApplication = () => {
+const NewApplication = ({ refresh }) => {
   const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
 
   const navigate = useNavigate();
@@ -21,7 +21,7 @@ const NewApplication = () => {
     jobDescription: "",
     isBookmarked: false,
     color: "#1C3F58", // Default primary color
-    statusId: "",
+    statusId: "0",
     applicationDate: "",
   });
 
@@ -58,27 +58,24 @@ const NewApplication = () => {
   };
 
   const postNewApplication = async () => {
-    // const data = {
-    //   userId: 1,
-    //   jobPosition: "Keyboard Warrior v3",
-    //   color: "#E4FBC0",
-    //   companyName: "My First Company Co", // words
-    //   location: "Bali, Indonesia",
-    //   statusId: 4,
-    //   isBookmarked: true,
-    //   jobDescription: "I am a job",
-    //   applicationDate: "2023-11-14",
-    // };
-    console.log("Data sending", formInfo);
-
     try {
       const post = await axios.post(
         `${BACKEND_URL}/applications/create`,
         formInfo,
       );
       document.getElementById("new_application_modal").close(); // Close modal if successful
-      navigate("/dashboard");
-      console.log("Post data", post);
+      refresh();
+      setFormInfo({
+        userId: 1, // To change later once Auth done
+        companyName: "",
+        jobPosition: "",
+        location: "",
+        jobDescription: "",
+        isBookmarked: false,
+        color: "#1C3F58", // Default primary color
+        statusId: "0",
+        applicationDate: "",
+      });
     } catch (err) {
       console.log(err);
     }
@@ -111,15 +108,15 @@ const NewApplication = () => {
               className="h-12 w-full rounded-lg border-[1px] border-text bg-transparent p-2 text-text hover:translate-y-[-2px] hover:border-[2px]"
               onChange={(e) => selectChange(e)}
               id="statusId"
-              defaultValue="" // Set the defaultValue to an empty string
+              defaultValue="0" // Set the defaultValue to an empty string
             >
-              <option value="" disabled>
+              <option value="0" disabled>
                 Choose One
               </option>
               <option value="1">Wishlist</option>
               <option value="2">Applied</option>
-              <option value="3">Interview</option>
-              <option value="4">Screening</option>
+              <option value="3">Screening</option>
+              <option value="4">Interview</option>
               <option value="5">Offer</option>
             </select>
 

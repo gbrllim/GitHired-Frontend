@@ -17,6 +17,7 @@ const Problem = ({
   starred,
   onSolvedChange,
   onStarredChange,
+  onEditClick,
 }) => (
   <div className="flex items-center justify-between border-b border-gray-600 p-2">
     <span className="w-1/12">
@@ -46,7 +47,12 @@ const Problem = ({
         {title}
       </a>
     </span>
-    <span className="w-4/12 text-gray-300">{notes}</span>
+    <span className="w-4/12 text-gray-300">
+      {notes}
+      <button onClick={onEditClick} className="ml-2 icon">
+        ✎
+      </button>
+    </span>
     <span className="w-1/12">
       <button
         className={`btn btn-xs ${
@@ -62,9 +68,23 @@ const Problem = ({
 export default function PracticePage() {
   const [openTopic, setOpenTopic] = useState(null);
   const [showNewTopic, setShowNewTopic] = useState(false);
-  const BACKEND_URL = process.env.REACT_APP_BACKEND_URL; //http://localhost:8080/questions/getAllQuestions
+  const BACKEND_URL = process.env.REACT_APP_BACKEND_URL; 
+  const [editingQuestion, setEditingQuestion] = useState(null)
 
   const [topics, setTopics] = useState([]);
+
+const handleEditClick = async (id) => {
+  try {
+    const response = await axios.get(`${BACKEND_URL}/questions/${id}`);
+    const questionData = response.data.data; // Adjust based on your API response structure
+    console.log(questionData)
+    setEditingQuestion(questionData);
+    document.getElementById("new_question_modal").showModal();
+  } catch (error) {
+    console.error("Error fetching question details: ", error);
+  }
+};
+
 
   useEffect(() => {
     axios
@@ -112,9 +132,7 @@ export default function PracticePage() {
       });
   }, []);
 
-  const handleAddClick = () => {
-    document.getElementById("new_question_modal").showModal();
-  };
+
 
   const toggleSolved = async (topicIndex, problemIndex) => {
     // Create a new copy of topics with the updated status
@@ -186,7 +204,6 @@ export default function PracticePage() {
         starred: updatedProblem.starred,
       },
     );
-
     // Update the state only if backend update is successful
     setTopics(newTopics);
   } catch (error) {
@@ -232,6 +249,7 @@ export default function PracticePage() {
                         onStarredChange={() =>
                           toggleStarred(topicIndex, problemIndex)
                         }
+                        onEditClick={() => handleEditClick(problem.id)}
                       />
                     ))}
                   </div>
@@ -239,15 +257,9 @@ export default function PracticePage() {
               )}
             </div>
           ))}
-          <button
-            className="mt-0.4 w-full rounded bg-gray-700 p-3 text-left text-white"
-            onClick={handleAddClick}
-          >
-            + <strong>Add New Topic</strong>
-          </button>
           <NewTopic />
         </div>
-        <NewQuestion topics={topics} />
+        <NewQuestion topics={topics} editingQuestion={editingQuestion} />
       </div>
     </div>
   );

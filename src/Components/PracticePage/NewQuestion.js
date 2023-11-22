@@ -1,5 +1,5 @@
 //-----------Library-----------//
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import axios from "axios";
 
 //-----------Components-----------//
@@ -7,13 +7,8 @@ import InputText from "../../Details/InputText";
 import Button from "../../Details/Button";
 import { useNavigate } from "react-router-dom";
 
-const NewQuestion = ({ topics }) => {
-  const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
-
-  const navigate = useNavigate();
-
-  const [formInfo, setFormInfo] = useState({
-    userId: 1, // To change later once Auth done
+const initialFormState = {
+    userId: 1,
     categoryName: "",
     title: "",
     link: "",
@@ -22,7 +17,20 @@ const NewQuestion = ({ topics }) => {
     platformId: "",
     notes: "",
     starred: false,
-  });
+  };
+
+const NewQuestion = ({ topics, editingQuestion }) => {
+  const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
+
+  const navigate = useNavigate();
+
+  const [formInfo, setFormInfo] = useState(initialFormState);
+  const [buttonLabel, setButtonLabel] = useState("Create")
+
+    const resetForm = () => {
+      setFormInfo(initialFormState);
+    };
+
 
   const textChange = (e) => {
     const name = e.target.id;
@@ -67,10 +75,11 @@ const NewQuestion = ({ topics }) => {
   const postNewQuestion = async () => {
     console.log("Data sending", formInfo);
 
-  //  const selectedCategory = topics.find(
-  //    (topic) => topic.id === formInfo.categoryId,
-  //  );
-  //  const categoryName = selectedCategory ? selectedCategory.name : "";
+    const isEditing = editingQuestion != null;
+    console.log(editingQuestion.id)
+    const url = isEditing
+      ? `${BACKEND_URL}/questions/edit/${editingQuestion.id}` // URL for updating
+      : `${BACKEND_URL}/questions/questionInCategory`;
 
    const requestData = {
      categoryName: formInfo.categoryName, // Name of the category
@@ -81,15 +90,46 @@ const NewQuestion = ({ topics }) => {
      },
    };
 
+  console.log(requestData)
+
    try {
-     const post = await axios.post(
-       `http://localhost:8080/questions/questionInCategory`,
-       requestData,
-     );
+     const response = isEditing
+       ? await axios.put(url, requestData)
+       : await axios.post(url,requestData);
+     
+     console.log("Response:", response.data)
+     resetForm();
+     setButtonLabel("Create")
+
    } catch (err) {
-     console.error("Error posting new question: ", err);
+     console.error("Error posting/updating question: ", err);
    }
   };
+
+  useEffect(() => {
+    if (editingQuestion) {
+      console.log(editingQuestion);
+      console.log(topics);
+      const categoryIndex = editingQuestion.categoryId - 1;
+      const category = topics[categoryIndex];
+
+      setFormInfo({
+        userId: 1, // or editingQuestion.userId
+        categoryName: category ? category.name : "",
+        title: editingQuestion.title,
+        link: editingQuestion.link,
+        difficultyId: editingQuestion.difficultyId,
+        statusId: editingQuestion.statusId,
+        platformId: editingQuestion.platformId,
+        notes: editingQuestion.notes,
+        starred: editingQuestion.starred,
+      });
+      setButtonLabel("Save");
+    } else {
+      setButtonLabel("Create");
+      resetForm();
+    }
+  }, [editingQuestion]);
 
   const setDifficulty = (difficultyId) => {
     setFormInfo((prevState) => ({
@@ -97,6 +137,16 @@ const NewQuestion = ({ topics }) => {
       difficultyId: difficultyId,
     }));
   };
+
+    const closeModal = () => {
+      document.getElementById("new_question_modal").close();
+    };
+
+    const handleSave = () => {
+      postNewQuestion();
+      closeModal();
+    };
+
 
   return (
     <div>
@@ -115,8 +165,11 @@ const NewQuestion = ({ topics }) => {
               ✕
             </button>
           </form>
-          <h1 className=" text-[20px] font-bold ">Add New Question</h1>
-          <h2 className=" mb-2 text-[10px] ">* indicates a required field</h2>
+          <h1 className=" text-[20px] font-bold ">
+            {editingQuestion ? "Edit Question" : "Add New Question"} 
+          </h1>
+          <h2 className=" mb-2 text-[10px] ">
+            {editingQuestion ? "" : "* indicates a required field"}</h2>
           <form className="grid grid-cols-2 gap-y-1 text-black">
             <p className="">Title: *</p>
             <InputText
@@ -141,7 +194,7 @@ const NewQuestion = ({ topics }) => {
               className="h-12 w-full rounded-lg border-[1px] border-text bg-transparent p-2 text-text hover:translate-y-[-2px] hover:border-[2px]"
               onChange={(e) => selectChange(e)}
               id="categoryId"
-              defaultValue=""
+              value={formInfo.categoryName}
             >
               <option value="" disabled>
                 Choose One
@@ -160,7 +213,7 @@ const NewQuestion = ({ topics }) => {
               className="h-12 w-full rounded-lg border-[1px] border-text bg-transparent p-2 text-text hover:translate-y-[-2px] hover:border-[2px]"
               onChange={(e) => selectChange(e)}
               id="platformId"
-              defaultValue=""
+              value={formInfo.platformId}
             >
               <option value="" disabled>
                 Choose One
@@ -223,8 +276,8 @@ const NewQuestion = ({ topics }) => {
 
           <div className="mt-2 flex w-full justify-center">
             <Button
-              label="Create"
-              handleClick={postNewQuestion}
+              label={buttonLabel}
+              handleClick={handleSave}
               disabled={!isFilled()}
             />
             <div

@@ -10,12 +10,15 @@ import Dashboard from "../Components/DashboardPage/Dashboard";
 import NewApplication from "../Components/DashboardPage/NewApplication";
 import InvalidTokenAlert from "../Details/InvalidTokenAlert";
 
-//-----------Media-----------//
+//-----------Utlities-----------//
+import { bearerToken } from "../Utilities/token";
 
 export default function DashboardPage() {
   const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
+  const token = localStorage.getItem("token");
   const navigate = useNavigate();
 
+  // Store user data
   const [formInfo, setFormInfo] = useState({
     id: "",
     email: "",
@@ -23,9 +26,14 @@ export default function DashboardPage() {
     profilePic: null,
   });
 
-  const [countdown, setCountdown] = useState(5);
+  // Store application data
+  const [data, setData] = useState(null);
+
+  // State trackers
+  const [countdown, setCountdown] = useState(30);
   const [showFailedAlert, setShowFailedAlert] = useState(false);
 
+  // Token management
   useEffect(() => {
     // Attempt to Retrieve token from search params
     let storedToken;
@@ -51,6 +59,7 @@ export default function DashboardPage() {
       axios
         .get(`${BACKEND_URL}/auth/verify?token=${token}`)
         .then((response) => {
+          console.log("Token is valid", response.data);
           const { id, email, firstName, profilePic } = response.data;
           setFormInfo({
             ...formInfo,
@@ -59,10 +68,11 @@ export default function DashboardPage() {
             firstName: firstName,
             profilePic: profilePic,
           });
+          refreshApps(); // Pull user applications info
         })
         .catch((error) => {
-          console.log("Token not valid");
-          localStorage.removeItem("token"); // Remove existing tokens if not valid
+          console.log("Token not valid", error);
+          localStorage.removeItem("token"); // Remove existing tokens if not valid + timeout
           setShowFailedAlert(true);
           const countdownInterval = setInterval(() => {
             setCountdown((prevCount) => prevCount - 1);
@@ -70,12 +80,42 @@ export default function DashboardPage() {
           setTimeout(() => {
             clearInterval(countdownInterval);
             navigate("/");
-          }, 5000);
+          }, 30000);
         });
     } else {
       console.log("No Token Found");
     }
   }, []);
+
+  const refreshApps = () => {
+    axios
+      .get(`${BACKEND_URL}/users/1/applications`, bearerToken(token)) // Endpoint: /users/:userId/applications
+      .then((response) => {
+        console.log("Backend Data Pulled: ", response.data.applications);
+        const data = response.data.applications;
+        const statusArray = [
+          "Wishlist",
+          "Applied",
+          "Screening",
+          "Interview",
+          "Offer",
+          "Archive",
+        ];
+
+        // Grouping applications in "data" by status
+        const groupedApps = {};
+
+        statusArray.forEach((status) => {
+          groupedApps[status] = data.filter(
+            (app) => app.applicationStatus.status === status,
+          );
+        });
+        setData(groupedApps);
+      })
+      .catch((error) => {
+        console.error(error);
+      });
+  };
 
   return (
     <motion.div
@@ -93,14 +133,14 @@ export default function DashboardPage() {
 
       <NavBar name={formInfo.firstName} profilePic={formInfo.profilePic} />
 
-      <Dashboard />
-      <Outlet />
+      <Dashboard appGroup={data} />
+      <Outlet context={refreshApps} />
 
       <p className=" p-2 text-white">
         user_id: {formInfo.id} (Remove post-development) <br></br>email:
         {formInfo.email}
       </p>
-      <NewApplication />
+      <NewApplication refresh={refreshApps} />
     </motion.div>
   );
 }

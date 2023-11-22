@@ -1,11 +1,16 @@
+//-----------Libraries-----------//
 import { NavLink } from "react-router-dom";
+
+//-----------Utilities-----------//
+import { getLastUpdatedText } from "../../Utilities/formatting";
 
 const Application = ({ application }) => {
   const { id, companyName, jobPosition, updatedAt, color, isBookmarked } =
     application;
+
   return (
     <NavLink
-      to={`/dashboard/edit/${id}`}
+      to={`/dashboard/edit/${id}/notes`}
       className="m-1 flex h-[80px] flex-row rounded-lg shadow-lg shadow-primary hover:translate-y-[-2px]"
     >
       {/* Color coding for applications */}
@@ -20,8 +25,8 @@ const Application = ({ application }) => {
         <p className="text-left text-xs font-semibold text-black">
           {jobPosition}
         </p>
-        <p className="mt-auto text-left text-[10px] leading-none text-primary">
-          {updatedAt}
+        <p className="mt-auto text-left text-[9px] leading-none text-primary">
+          {getLastUpdatedText(updatedAt)}
         </p>
       </div>
       <div
