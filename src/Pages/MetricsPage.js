@@ -1,5 +1,5 @@
 //-----------Libaries-----------//
-import {React, useEffect, useState} from "react";
+import { React, useEffect, useState } from "react";
 import {
   BarChart,
   Bar,
@@ -17,7 +17,8 @@ import axios from "axios";
 import NavBar from "../Details/NavBar";
 
 //-----------Utilities-----------//
-import {bearerToken} from "../Utilities/token";
+import { bearerToken } from "../Utilities/token";
+import RemindersSummary from "../Components/Applications/Reminders/RemindersSummary";
 
 //-----------Media-----------//
 
@@ -53,13 +54,13 @@ export default function MetricsPage() {
     useState([]);
   const [questions, setQuestions] = useState([]);
   const [processedQuestionsData, setProcessedQuestionsData] = useState([]);
+  const [remindersData, setRemindersData] = useState(null);
 
   // GET - Retrieve user data from Backend for user
   useEffect(() => {
     axios
       .get(`${BACKEND_URL}/users/data`, bearerToken(token)) // Endpoint: users/data
       .then((response) => {
-        console.log("Single Application Endpoint", response.data.userData);
         setApplicationGoalCount(response.data.userData.applicationGoalCount);
         setQuestionsGoalCount(response.data.userData.questionsGoalCount);
       });
@@ -68,10 +69,20 @@ export default function MetricsPage() {
   // GET - Retrieve applications from Backend
   useEffect(() => {
     axios
-      .get(`${BACKEND_URL}/users/applications`, bearerToken(token)) // Endpoint: users/applications
+      .get(`${BACKEND_URL}/users/applications`, bearerToken(token))
       .then((response) => {
-        console.log("Single Application Startp", response.data.applications);
         setApplications(response.data.applications);
+      });
+  }, []);
+
+  // GET - Retrieve reminders from Backend
+  useEffect(() => {
+    axios
+      .get(`${BACKEND_URL}/applications/reminders/getAll`, bearerToken(token))
+      .then((response) => {
+        const previewData = response.data.data.slice(0, 6); // Reduce top 3
+        console.log("Reminders", previewData);
+        setRemindersData(previewData);
       });
   }, []);
 
@@ -106,52 +117,50 @@ export default function MetricsPage() {
 
   // GET - Retrieve questions from Backend
 
-    useEffect(() => {
-      axios
-        .get(`${BACKEND_URL}/users/questions`, bearerToken(token)) // Endpoint: users/questions
-        .then((response) => {
-          console.log("Questions", response.data.questions);
-          setQuestions(response.data.questions);
-        });
-    }, []);
+  useEffect(() => {
+    axios
+      .get(`${BACKEND_URL}/users/questions`, bearerToken(token)) // Endpoint: users/questions
+      .then((response) => {
+        setQuestions(response.data.questions);
+      });
+  }, []);
 
-      useEffect(() => {
-        const getWeekNumber = (d) => {
-          const date = new Date(d.getTime());
-          date.setUTCDate(date.getUTCDate() + 4 - (date.getUTCDay() || 7));
-          const yearStart = new Date(Date.UTC(date.getUTCFullYear(), 0, 1));
-          return Math.ceil(((date - yearStart) / 86400000 + 1) / 7);
+  useEffect(() => {
+    const getWeekNumber = (d) => {
+      const date = new Date(d.getTime());
+      date.setUTCDate(date.getUTCDate() + 4 - (date.getUTCDay() || 7));
+      const yearStart = new Date(Date.UTC(date.getUTCFullYear(), 0, 1));
+      return Math.ceil(((date - yearStart) / 86400000 + 1) / 7);
+    };
+
+    const weeklySolvedQuestionsSummary = {};
+
+    questions.forEach((question) => {
+      if (question.statusId === 1) {
+        const updatedDate = new Date(question.updatedAt);
+        const weekNumber = getWeekNumber(updatedDate);
+
+        if (!weeklySolvedQuestionsSummary[weekNumber]) {
+          weeklySolvedQuestionsSummary[weekNumber] = 0;
         }
+        weeklySolvedQuestionsSummary[weekNumber]++;
+      }
+    });
 
-       const weeklySolvedQuestionsSummary = {};
+    const codingPracticeData = Object.keys(weeklySolvedQuestionsSummary).map(
+      (week) => ({
+        week: week.toString(),
+        Questions: weeklySolvedQuestionsSummary[week],
+      }),
+    );
 
-       questions.forEach((question) => {
-         if (question.statusId === 1) {
-           const updatedDate = new Date(question.updatedAt);
-           const weekNumber = getWeekNumber(updatedDate);
+    setProcessedQuestionsData(codingPracticeData);
+  }, [questions]);
 
-           if (!weeklySolvedQuestionsSummary[weekNumber]) {
-             weeklySolvedQuestionsSummary[weekNumber] = 0;
-           }
-           weeklySolvedQuestionsSummary[weekNumber]++;
-         }
-       });
-
-        const codingPracticeData = Object.keys(
-          weeklySolvedQuestionsSummary,
-        ).map((week) => ({
-          week: week.toString(),
-          Questions: weeklySolvedQuestionsSummary[week],
-        }));
-
-        setProcessedQuestionsData(codingPracticeData);
-      }, [questions]);
-
-      const latestCodingQuestions =
-        processedQuestionsData.length > 0 ?
-        processedQuestionsData[
-          processedQuestionsData.length - 1].Questions : 0;
-        
+  const latestCodingQuestions =
+    processedQuestionsData.length > 0
+      ? processedQuestionsData[processedQuestionsData.length - 1].Questions
+      : 0;
 
   return (
     <div className="flex h-screen flex-col bg-background">
@@ -202,12 +211,12 @@ export default function MetricsPage() {
 
           {/* Top right: Upcoming events */}
           <section className="rounded-lg bg-gray-700 p-4">
-            <h2 className="mb-2 text-lg font-semibold">Upcoming</h2>
-            <div className="mb-2">
-              <p>Interview with Midjourney - 10 Nov 2023 - 4pm</p>
-            </div>
-            <div>
-              <p>Interview with Orange - 11 Nov 2023 - 2pm</p>
+            <h2 className="mb-2 text-lg font-semibold">Upcoming Reminders</h2>
+            <div className="grid grid-cols-2">
+              {remindersData &&
+                remindersData.map((reminder, index) => (
+                  <RemindersSummary key={index} data={reminder} />
+                ))}
             </div>
           </section>
 
