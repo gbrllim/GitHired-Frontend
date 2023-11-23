@@ -115,6 +115,7 @@ export default function PracticePage() {
     console.log("Toggle solved 3");
 
     const updatedProblem = newTopics[topicIndex].problems[problemIndex];
+    console.log(updatedProblem)
 
     try {
       // Send a PUT request to update the backend

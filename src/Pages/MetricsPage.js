@@ -71,7 +71,12 @@ export default function MetricsPage() {
     axios
       .get(`${BACKEND_URL}/users/applications`, bearerToken(token))
       .then((response) => {
-        setApplications(response.data.applications);
+        console.log("Single Application Startp", response.data.applications);
+        const filteredApplications = response.data.applications.filter(
+          (application) => application.applicationStatus.status !== "Wishlist",
+        );
+        console.log(filteredApplications)
+        setApplications(filteredApplications);
       });
   }, []);
 
