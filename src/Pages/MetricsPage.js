@@ -71,7 +71,11 @@ export default function MetricsPage() {
       .get(`${BACKEND_URL}/users/applications`, bearerToken(token)) // Endpoint: users/applications
       .then((response) => {
         console.log("Single Application Startp", response.data.applications);
-        setApplications(response.data.applications);
+        const filteredApplications = response.data.applications.filter(
+          (application) => application.applicationStatus.status !== "Wishlist",
+        );
+        console.log(filteredApplications)
+        setApplications(filteredApplications);
       });
   }, []);
 

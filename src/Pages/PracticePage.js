@@ -111,6 +111,7 @@ export default function PracticePage() {
     });
 
     const updatedProblem = newTopics[topicIndex].problems[problemIndex];
+    console.log(updatedProblem)
 
     try {
       // Send a PUT request to update the backend
