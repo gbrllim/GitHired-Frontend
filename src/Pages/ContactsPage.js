@@ -33,8 +33,7 @@ export default function ContactsPage() {
   return (
     <div className="flex h-screen flex-col items-center justify-center bg-background">
       <NavBar />
-      <h1>Contacts</h1>
-      <div>
+      <div className="grid grid-cols-3">
         {data &&
           data.map((contact, index) => (
             <ContactPreview key={index} data={contact} />
