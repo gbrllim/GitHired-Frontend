@@ -11,7 +11,7 @@ import RotatingWords from "../Components/HomePage/RotatingWords";
 
 //-----------Media-----------//
 import logo from "../Images/Logo-GitHired.svg";
-import demo from "../Images/mock-dashboard.png";
+import demo from "../Images/GitHired Features.png";
 import wallpaper from "../Images/gh-wallpaper.png";
 
 export default function HomePage() {
@@ -87,7 +87,7 @@ export default function HomePage() {
       </main>
       <article className=" flex h-full w-1/2 items-center justify-center">
         <img
-          className="max-h-[400px]"
+          className="max-h-[400px] rounded-lg"
           src={demo}
           alt="Illustration of GitHired's Dashboard"
         />
