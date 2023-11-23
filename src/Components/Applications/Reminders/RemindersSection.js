@@ -72,7 +72,6 @@ const RemindersSection = () => {
   return (
     <div className="flex  flex-col items-center">
       <header className="flex w-4/5 flex-row gap-2">
-        <label className="">Create Reminder:</label>
         <InputText
           id="reminderNote"
           placeholder="2nd Interview round"

@@ -35,8 +35,8 @@ Backend Repo: https://github.com/sathyat20/GitHired-Backend
 # Project Management
 
 - Kanban Board - Github Projects
-- Wireframing & User Flows - Figma
-- Feature Planning - Miro
+- Wireframing & User Flows - Figma https://www.figma.com/file/EmBCAwabhiOpJ4CWEdga5G/GitHired?type=design&node-id=0-1&mode=design&t=T7q70a07Uep8lmju-0
+- Feature Planning - Miro https://miro.com/app/board/uXjVNTMMiBA=/
 - Communication - Zoom, Slack
 
 # Core Features
