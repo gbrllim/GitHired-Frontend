@@ -30,11 +30,11 @@ export default function OnboardingPage() {
 
   // Variables
   const [formInfo, setFormInfo] = useState({
-    email: "email1234@email.com",
+    email: "",
     firstName: "",
     lastName: "",
     profilePic: null,
-    applicationsGoalCount: "",
+    applicationGoalCount: "",
     questionsGoalCount: "",
   });
 

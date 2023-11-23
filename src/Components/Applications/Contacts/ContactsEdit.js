@@ -136,7 +136,7 @@ const ContactsEdit = ({ currentContact, refresh }) => {
         <label>Last Contacted: *</label>
         <InputDate
           id="lastContactedDate"
-          value={contactsData.lastContactedDate}
+          value={contactsData && contactsData.lastContactedDate}
           handleChange={textChange}
         />
       </div>

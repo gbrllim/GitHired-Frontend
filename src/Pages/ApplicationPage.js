@@ -30,7 +30,6 @@ export default function ApplicationPage() {
 
   const { id } = useParams();
   const [formInfo, setFormInfo] = useState({
-    userId: 1, //Set as 1 for now
     companyName: "",
     jobPosition: "",
     location: "",
@@ -55,10 +54,14 @@ export default function ApplicationPage() {
   const updateDetails = () => {
     console.log("Details to be updated", formInfo);
     axios
-      .put(`${BACKEND_URL}/applications/edit/${id}`, formInfo)
+      .put(
+        `${BACKEND_URL}/applications/edit/${id}`,
+        formInfo,
+        bearerToken(token),
+      )
       .then((response) => {
         console.log("Update response", response);
-        refresh();
+        refresh(token);
       });
   };
 
@@ -68,7 +71,7 @@ export default function ApplicationPage() {
       .delete(`${BACKEND_URL}/applications/delete/${id}`, bearerToken(token))
       .then((response) => {
         console.log("Application Deleted", response);
-        refresh();
+        refresh(token);
         navigate("/dashboard");
       });
   };
