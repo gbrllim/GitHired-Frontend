@@ -29,7 +29,6 @@ const InterviewSection = () => {
     axios
       .get(`${BACKEND_URL}/users/${id}/interviews`, bearerToken(token))
       .then((response) => {
-        console.log("interview data", response.data.data);
         setData(response.data.data);
       })
       .catch((error) => {

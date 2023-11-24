@@ -59,7 +59,7 @@ const NewApplication = ({ refresh }) => {
 
   const postNewApplication = async () => {
     try {
-      const post = await axios.post(
+      await axios.post(
         `${BACKEND_URL}/applications/create`,
         formInfo,
         bearerToken(token),

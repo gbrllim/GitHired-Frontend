@@ -29,7 +29,6 @@ const ContactsSection = () => {
     axios
       .get(`${BACKEND_URL}/users/${id}/contacts`, bearerToken(token))
       .then((response) => {
-        console.log("contacts data", response.data.contacts);
         setData(response.data.contacts);
       })
       .catch((error) => {

@@ -29,7 +29,6 @@ export default function PracticePage() {
         bearerToken(token),
       );
       const questionData = response.data.data;
-      console.log(questionData);
       setEditingQuestion(questionData);
       document.getElementById("new_question_modal").showModal();
     } catch (error) {
@@ -48,7 +47,6 @@ export default function PracticePage() {
       .then((response) => {
         const questions = response.data.data;
         const categories = response.data.categories;
-        console.log("Questions Pulled", questions);
 
         // Difficulty
         const difficultyMap = {
@@ -90,11 +88,9 @@ export default function PracticePage() {
   };
 
   const toggleSolved = async (topicIndex, problemIndex) => {
-    console.log("Toggle solved");
     // Create a new copy of topics with the updated status
     const newTopics = topics.map((topic, tIndex) => {
       if (tIndex === topicIndex) {
-        console.log("Toggle solved 2");
         return {
           ...topic,
           problems: topic.problems.map((problem, pIndex) => {
@@ -112,14 +108,11 @@ export default function PracticePage() {
       }
       return topic;
     });
-    console.log("Toggle solved 3");
 
     const updatedProblem = newTopics[topicIndex].problems[problemIndex];
-    console.log(updatedProblem)
 
     try {
       // Send a PUT request to update the backend
-      console.log("Toggle solved 4", updatedProblem.statusId);
       await axios.put(
         `${BACKEND_URL}/questions/edit/${updatedProblem.id}`,
         {
@@ -135,7 +128,6 @@ export default function PracticePage() {
   };
 
   const toggleStarred = async (topicIndex, problemIndex) => {
-    console.log("Toggle Starred");
     const newTopics = topics.map((topic, tIndex) => {
       if (tIndex === topicIndex) {
         return {

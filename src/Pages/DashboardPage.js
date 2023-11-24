@@ -27,7 +27,6 @@ export default function DashboardPage() {
     if (tokenRetrieved) {
       const token = tokenRetrieved;
       localStorage.setItem("token", tokenRetrieved);
-      console.log("Param token stored in localStorage", tokenRetrieved);
       refreshApps(token);
     } else {
       const token = localStorage.getItem("token");
@@ -40,7 +39,6 @@ export default function DashboardPage() {
     axios
       .get(`${BACKEND_URL}/users/applications`, bearerToken(token)) // Endpoint: /users/:userId/applications
       .then((response) => {
-        console.log("Backend Data Pulled: ", response.data.applications);
         const data = response.data.applications;
         const statusArray = [
           "Wishlist",

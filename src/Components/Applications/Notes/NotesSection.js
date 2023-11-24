@@ -54,7 +54,6 @@ const NotesSection = () => {
       <aside className="flex w-1/3 flex-col items-center overflow-y-auto">
         <h1 className="ml-2">Notes 📝</h1>{" "}
         <div className="flex h-[200px] flex-col">
-          {console.log("data", data)}
           {data &&
             data.map((note, index) => (
               <NotesPreview

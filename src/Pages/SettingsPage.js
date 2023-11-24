@@ -1,5 +1,5 @@
 //-----------Libaries-----------//
-import axios, { formToJSON } from "axios";
+import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 
@@ -17,7 +17,6 @@ import ProfileImage from "../Details/ProfileImage.js";
 import { bearerToken } from "../Utilities/token.js";
 
 //-----------Media-----------//
-import logo from "../Images/Logo-GitHired.svg";
 import defaultProfile from "../Images/defaultProfile.png";
 
 export default function SettingsPage() {
@@ -44,7 +43,6 @@ export default function SettingsPage() {
           bearerToken(token),
         );
         const userData = response.data.userData;
-        console.log("data", userData);
         setFormInfo(userData);
       } catch (error) {
         console.error("Error fetching user data:", error);
@@ -55,7 +53,6 @@ export default function SettingsPage() {
   }, []);
 
   const editUser = async () => {
-    console.log("edit", formInfo);
     try {
       const response = await axios.put(
         `${BACKEND_URL}/users/edit`,
@@ -81,7 +78,6 @@ export default function SettingsPage() {
         .then((url) => {
           setFormInfo({ ...formInfo, profilePic: url });
           setFile(null);
-          console.log("Image Uploaded", url);
         })
         .catch((error) => {
           console.error("Error uploading image:", error);
@@ -98,13 +94,8 @@ export default function SettingsPage() {
     });
   };
 
-  const isFilled = () => {
-    return formInfo.firstName.trim() !== "" && formInfo.lastName.trim() !== "";
-  };
-
   const handleImageUpload = (e) => {
     const file = e.target.files[0];
-    console.log("File stored", file);
     setFile(file);
   };
 

@@ -29,7 +29,6 @@ const InvalidTokenAlert = () => {
 
   const verifyToken = (token) => {
     axios.get(`${BACKEND_URL}/users`, bearerToken(token)).catch((error) => {
-      console.log("Auth failed", error);
       localStorage.removeItem("token"); // Remove existing tokens if not valid + timeout
       setShowFailedAlert(true);
       const countdownInterval = setInterval(() => {

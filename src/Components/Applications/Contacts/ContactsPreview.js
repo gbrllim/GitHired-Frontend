@@ -6,7 +6,6 @@ import Button from "../../../Details/Button";
 
 //-----------Utilities-----------//
 import { bearerToken } from "../../../Utilities/token";
-import ContactCard from "../../Contacts/ContactCard";
 
 const ContactPreview = ({ data, select, refresh }) => {
   const token = localStorage.getItem("token");

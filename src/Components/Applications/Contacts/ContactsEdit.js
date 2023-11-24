@@ -51,7 +51,6 @@ const ContactsEdit = ({ currentContact, refresh }) => {
 
   // Edit contacts data
   const updateContacts = () => {
-    console.log("Update Contact Info", contactsData);
     axios
       .put(
         `${BACKEND_URL}/contacts/edit/${contactsData.id}`,

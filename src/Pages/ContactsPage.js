@@ -7,7 +7,7 @@ import NavBar from "../Details/NavBar";
 
 //-----------Utlities-----------//
 import { bearerToken } from "../Utilities/token";
-import ContactPreview from "../Components/Contacts/ContactCard";
+import ContactPreview from "../Components/ContactsPage/ContactCard";
 
 //-----------Media-----------//
 
@@ -25,7 +25,6 @@ export default function ContactsPage() {
     axios
       .get(`${BACKEND_URL}/contacts/all`, bearerToken(token))
       .then((response) => {
-        console.log("contacts Pulled", response.data);
         setData(response.data.contacts);
       });
   };

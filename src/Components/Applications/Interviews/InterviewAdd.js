@@ -16,8 +16,6 @@ const InterviewAdd = ({ appId, refresh }) => {
   });
 
   const newInterview = () => {
-    console.log("data to be sent", interviewData);
-
     axios
       .post(
         `${BACKEND_URL}/applications/interviews/create`,

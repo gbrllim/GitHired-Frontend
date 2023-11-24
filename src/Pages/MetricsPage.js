@@ -71,11 +71,9 @@ export default function MetricsPage() {
     axios
       .get(`${BACKEND_URL}/users/applications`, bearerToken(token))
       .then((response) => {
-        console.log("Single Application Startp", response.data.applications);
         const filteredApplications = response.data.applications.filter(
           (application) => application.applicationStatus.status !== "Wishlist",
         );
-        console.log(filteredApplications)
         setApplications(filteredApplications);
       });
   }, []);
@@ -86,7 +84,6 @@ export default function MetricsPage() {
       .get(`${BACKEND_URL}/applications/reminders/getAll`, bearerToken(token))
       .then((response) => {
         const previewData = response.data.data.slice(0, 6); // Reduce top 3
-        console.log("Reminders", previewData);
         setRemindersData(previewData);
       });
   }, []);

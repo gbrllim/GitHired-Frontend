@@ -59,16 +59,13 @@ export default function OnboardingPage() {
 
   const handleImageUpload = (e) => {
     const file = e.target.files[0];
-    console.log("File stored", file);
     setFile(file);
   };
 
   // Retrieve token and email from JWT
   useEffect(() => {
     const queryParams = new URLSearchParams(window.location.search);
-    const tokenRetrieved = queryParams.get("token");
-    localStorage.setItem("token", tokenRetrieved);
-    console.log("Token Retrieved", tokenRetrieved);
+    const tokenRetrieved = queryParams.get("token"); //localhost:3000/dashboard?token={Token}
     if (tokenRetrieved) {
       axios
         .get(`${BACKEND_URL}/auth/retrieve-email?token=${tokenRetrieved}`)
@@ -76,7 +73,6 @@ export default function OnboardingPage() {
           setFormInfo({ ...formInfo, email: response.data });
         })
         .catch((error) => {
-          console.log("Token not valid");
           localStorage.removeItem("token"); // Remove existing tokens if not valid
           setShowFailedAlert(true);
           const countdownInterval = setInterval(() => {
@@ -99,7 +95,6 @@ export default function OnboardingPage() {
         .then((url) => {
           setFormInfo({ ...formInfo, profilePic: url });
           setFile(null);
-          console.log("Image Uploaded", url);
         })
         .catch((error) => {
           console.error("Error uploading image:", error);
@@ -107,9 +102,8 @@ export default function OnboardingPage() {
     }
   }, [file]);
 
-  // Create new user on backend and redirect to dashboard
+  // Create new user on backend, refresh token with generated id and redirect to dashboard
   const postNewUser = async () => {
-    console.log("Data sending", formInfo);
     try {
       const post = await axios.post(
         `${BACKEND_URL}/users/newUser`,
@@ -118,7 +112,6 @@ export default function OnboardingPage() {
       );
       const refreshedToken = post.data.token;
       localStorage.setItem("token", refreshedToken);
-      console.log("Refreshed Token", refreshedToken);
       navigate("/dashboard");
     } catch (err) {
       console.log(err);

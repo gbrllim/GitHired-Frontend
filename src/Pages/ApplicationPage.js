@@ -45,14 +45,15 @@ export default function ApplicationPage() {
     axios
       .get(`${BACKEND_URL}/applications/${id}`, bearerToken(token)) // Endpoint: users/:userId/:applicationId
       .then((response) => {
-        console.log("Single Application Endpoint", response.data.data);
         setFormInfo(response.data.data);
+      })
+      .catch((err) => {
+        console.log(err);
       });
   }, []);
 
   // PUT - Edit application details
   const updateDetails = () => {
-    console.log("Details to be updated", formInfo);
     axios
       .put(
         `${BACKEND_URL}/applications/edit/${id}`,
@@ -60,8 +61,10 @@ export default function ApplicationPage() {
         bearerToken(token),
       )
       .then((response) => {
-        console.log("Update response", response);
         refresh(token);
+      })
+      .catch((err) => {
+        console.log(err);
       });
   };
 
@@ -70,9 +73,11 @@ export default function ApplicationPage() {
     axios
       .delete(`${BACKEND_URL}/applications/delete/${id}`, bearerToken(token))
       .then((response) => {
-        console.log("Application Deleted", response);
         refresh(token);
         navigate("/dashboard");
+      })
+      .catch((err) => {
+        console.log(err);
       });
   };
 
@@ -286,7 +291,7 @@ export default function ApplicationPage() {
               />
             </form>
           </main>
-          {/* Additional Details*/}
+          {/* Side sections*/}
           <section className="w-2/3">
             <Outlet />
           </section>

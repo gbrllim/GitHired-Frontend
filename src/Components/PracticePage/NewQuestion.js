@@ -5,7 +5,6 @@ import axios from "axios";
 //-----------Components-----------//
 import InputText from "../../Details/InputText";
 import Button from "../../Details/Button";
-import { useNavigate } from "react-router-dom";
 
 //-----------Utilities-----------//
 import { bearerToken } from "../../Utilities/token";
@@ -24,7 +23,6 @@ const initialFormState = {
 const NewQuestion = ({ editingQuestion, refresh }) => {
   const token = localStorage.getItem("token");
   const BACKEND_URL = process.env.REACT_APP_BACKEND_URL;
-  const navigate = useNavigate();
 
   const [formInfo, setFormInfo] = useState(initialFormState);
   const [buttonLabel, setButtonLabel] = useState("Create");
@@ -63,8 +61,6 @@ const NewQuestion = ({ editingQuestion, refresh }) => {
   };
 
   const postNewQuestion = async () => {
-    console.log("Data sending", formInfo);
-
     const isEditing = editingQuestion != null;
     const url = isEditing
       ? `${BACKEND_URL}/questions/edit/${editingQuestion.id}` // URL for updating
@@ -78,10 +74,8 @@ const NewQuestion = ({ editingQuestion, refresh }) => {
       },
     };
 
-    console.log("Data to be sent", requestData.questionData);
-
     try {
-      const response = isEditing
+      isEditing
         ? await axios.put(url, requestData.questionData, bearerToken(token))
         : await axios.post(url, requestData.questionData, bearerToken(token));
 
@@ -98,7 +92,6 @@ const NewQuestion = ({ editingQuestion, refresh }) => {
     axios
       .get(`${BACKEND_URL}/questions/categories`, bearerToken(token))
       .then((response) => {
-        console.log("Topics Pull", response.data.categories);
         setTopics(response.data.categories);
       });
   }, []);
@@ -106,8 +99,6 @@ const NewQuestion = ({ editingQuestion, refresh }) => {
   // Pre-fill the formInfo
   useEffect(() => {
     if (editingQuestion) {
-      console.log(editingQuestion);
-      console.log(topics);
       const categoryIndex = editingQuestion.categoryId - 1;
       const category = topics[categoryIndex];
 

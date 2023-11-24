@@ -57,11 +57,6 @@ const router = createBrowserRouter([
             element: <ContactsSection />,
             errorElement: <ErrorPage />,
           },
-          {
-            path: "documents",
-            element: <InterviewSection />,
-            errorElement: <ErrorPage />,
-          },
         ],
       },
     ],

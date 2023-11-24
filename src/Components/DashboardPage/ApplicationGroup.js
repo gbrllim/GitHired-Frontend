@@ -1,9 +1,9 @@
 //-----------Libaries-----------//
-import Application from "./Application";
+import Application from "./ApplicationPill";
 
 const ApplicationGroup = ({ header, apps }) => {
   return (
-    <section className="mx-1 my-2 h-[85vh] w-[280px] shrink-0 overflow-y-auto border-2 border-accent p-1 text-center text-lg">
+    <section className="mx-1 my-2 h-[90vh] w-[280px] shrink-0 overflow-y-auto border-2 border-accent p-1 text-center text-lg">
       <h1>
         {header}
         {"  "}({apps.length})

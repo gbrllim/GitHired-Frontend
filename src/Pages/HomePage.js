@@ -1,5 +1,4 @@
 //-----------Libaries-----------//
-import { NavLink } from "react-router-dom";
 import axios from "axios";
 import { useState } from "react";
 import { motion } from "framer-motion";
@@ -30,10 +29,8 @@ export default function HomePage() {
   const [success, setSuccess] = useState(false);
 
   const sendMagicLinkEmail = async () => {
-    console.log("Data sending", data);
     try {
-      const post = await axios.post(`${BACKEND_URL}/auth/login`, data);
-      console.log("Post data", post);
+      await axios.post(`${BACKEND_URL}/auth/login`, data);
       setMessage("Check your inbox for the magic link 📧");
       setSuccess(!success);
     } catch (err) {
@@ -42,6 +39,7 @@ export default function HomePage() {
     }
   };
 
+  // Data validation
   const isFilled = () => {
     return data.email.trim() !== "";
   };

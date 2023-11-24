@@ -28,14 +28,13 @@ const NewTopic = ({ refreshing }) => {
     if (!isFilled()) return;
 
     try {
-      const response = await axios.post(
+      await axios.post(
         `${BACKEND_URL}/questions/newCategory`,
         {
           categoryName: topicName,
         },
         bearerToken(token),
       );
-      console.log("Response:", response.data);
       setTopicName("");
       refreshing();
       document.getElementById("new_topic_modal").close();
