@@ -36,10 +36,10 @@ Backend Repo: https://github.com/sathyat20/GitHired-Backend
 
 - Kanban Board - Github Projects
 - Wireframing & User Flows - Figma https://www.figma.com/file/EmBCAwabhiOpJ4CWEdga5G/GitHired?type=design&node-id=0-1&mode=design&t=T7q70a07Uep8lmju-0
+- Entity-relationship diagram for backend database structure - dbdiagram.io https://dbdiagram.io/d/jobapps-v0-1-654b342f7d8bbd6465bb7fbc
 - Feature Planning - Miro https://miro.com/app/board/uXjVNTMMiBA=/
 - Communication - Zoom, Slack
 - [Project Overview Slides](https://docs.google.com/presentation/d/1BQi7FU2v8ftq7vEIwXeqff1QWy6JKkglP1eSx1qtgds/edit?usp=sharing)
-- Entity-relationship diagram for backend database structure - dbdiagram.io https://dbdiagram.io/d/jobapps-v0-1-654b342f7d8bbd6465bb7fbc
 
 # Core Features
 - Job application builder and tracker
