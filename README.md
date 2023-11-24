@@ -6,7 +6,7 @@ Contributors: Sathya Thenappan, Gabriel Lim
 
 Your end tag to your job search as a software egnineer!
 
-Backend Repo: https://github.com/sathyat20/GitHired-Backend
+Backend Repo: https://github.com/gbrllim/GitHired-Backend
 
 # Tech Stack
 
