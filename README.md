@@ -13,15 +13,21 @@ Backend Repo: https://github.com/sathyat20/GitHired-Backend
 **Frontend**
 
 - React.JS
+- React-router-dom
+- Axios
 - TailwindCSS
 - DaisyUI
 - ReactRouter
 - Framer Motion
+- ReCharts
 
 **Backend**
 
 - ExpressJS
 - Firebase Storage
+- Sequelize
+- JsonWebToken
+- Postgres
 
 **Hosting**
 
