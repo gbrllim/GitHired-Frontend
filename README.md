@@ -38,10 +38,21 @@ Backend Repo: https://github.com/sathyat20/GitHired-Backend
 - Wireframing & User Flows - Figma https://www.figma.com/file/EmBCAwabhiOpJ4CWEdga5G/GitHired?type=design&node-id=0-1&mode=design&t=T7q70a07Uep8lmju-0
 - Feature Planning - Miro https://miro.com/app/board/uXjVNTMMiBA=/
 - Communication - Zoom, Slack
+- [Project Overview Slides]([https://link-url-here.org](https://docs.google.com/presentation/d/1BQi7FU2v8ftq7vEIwXeqff1QWy6JKkglP1eSx1qtgds/edit?usp=sharing))
 
 # Core Features
+- Job application builder and tracker
+- Weekly applications and practice questions (Leetcode/Hackkerank) goals setting
+- Metrics to keep track of application and practice question numbers on a weekly basis
+- Organizing job notes and job contacts
+- Setting reminders for interviews and important deadlines
 
 # Future Enhancements
+- Document storage for users to keep relevant resumes, cover letters
+- Integration with Leetcode/Hackerrank accounts to track questions
+- Social media feed for users to post their offers, solutions, tips to other on the job hunt
+- Job page with recently posted SWE jobs
+- Blog platform for users to share their past experiences/learning
 
 # Resources Used
 
